@@ -1,22 +1,31 @@
 #include "PuzzleParser.hpp"
 
-PuzzleParser::PuzzleParser(std::string fileName) : _fileName(fileName)
-{
-    if (fileName.empty())
-    {
-        throw std::invalid_argument("File name cannot be empty");
-    }
-    try
-    {
-        parse();
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
-}
+// Parsing methods
 
-PuzzleParser::~PuzzleParser() {}
+bool PuzzleParser::parseLineLength(std::string lineFile)
+{
+    if (lineFile.empty())
+        return false;
+
+    int i = 0;
+    int lineLength = lineFile.length();
+    while (isspace(lineFile[i]))
+        i++;
+    if (isdigit(lineFile[i]) == false)
+        return false;
+    else
+    {
+        int j = i;
+        while (isdigit(lineFile[j]))
+            j++;
+        setLineLength(std::stoi(lineFile.substr(i, j)));
+        while (lineFile[j] != '\n' && isspace(lineFile[j]))
+            j++;
+        if (lineFile[j] != '\n')
+            throw std::invalid_argument("Line length must be followed by a newline character");
+    }
+    return true;
+}
 
 bool PuzzleParser::isCommentLine(std::string line)
 {
@@ -47,6 +56,8 @@ void PuzzleParser::parse()
     }
 
     std::string line;
+    char delimiter = ' ';
+    std::vector<std::string> tokens;
     int lineCount = 0;
     while (std::getline(file, line))
     {
@@ -57,5 +68,61 @@ void PuzzleParser::parse()
             continue;
         if (lineCount != 0 && isComment)
             throw std::invalid_argument("Comment line found in middle of file");
+        if (lineCount == 0)
+        {
+            if (parseLineLength(line) == false)
+                throw std::invalid_argument("Invalid line length");
+        }
+        else
+        {
+            const char *cstr = line.c_str();
+            char *token = strtok((char *)cstr, &delimiter);
+            while (token != NULL)
+            {
+                tokens.push_back(std::string(token));
+                token = strtok(NULL, &delimiter);
+            }
+            // compter uniquement avant '#'
+        }
+        lineCount++;
     }
+}
+
+// Constructor and destructor
+
+PuzzleParser::PuzzleParser(std::string fileName) : _fileName(fileName)
+{
+    if (fileName.empty())
+    {
+        throw std::invalid_argument("File name cannot be empty");
+    }
+    try
+    {
+        parse();
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+PuzzleParser::~PuzzleParser() {}
+
+// Getters
+
+int PuzzleParser::getLineLength() const
+{
+    return lineLength;
+}
+
+std::string PuzzleParser::getFileName() const
+{
+    return _fileName;
+}
+
+// Setters
+
+void PuzzleParser::setLineLength(int lineLength)
+{
+    this->lineLength = lineLength;
 }
