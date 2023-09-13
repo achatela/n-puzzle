@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string.h>
 #include <set>
+#include <sstream>
 
 class PuzzleParser
 {
