@@ -1,4 +1,7 @@
-# this is a comment
+# cc
+
+## $$ comment %%
+
 3
 3 2 6
 1 4 0
