@@ -12,7 +12,7 @@ bool PuzzleParser::parseLineLength(std::string lineFile)
     while (isspace(lineFile[i]))
         i++;
     if (isdigit(lineFile[i]) == false)
-        return false;
+        throw std::invalid_argument("First line is not a number");
     else
     {
         int j = i;
@@ -21,8 +21,10 @@ bool PuzzleParser::parseLineLength(std::string lineFile)
         setLineLength(std::stoi(lineFile.substr(i, j)));
         while (lineFile[j] != '\n' && isspace(lineFile[j]))
             j++;
-        if (lineFile[j] != '\n')
-            throw std::invalid_argument("Line length must be followed by a newline character");
+        if (j != lineLength)
+            throw std::invalid_argument("First line is not a number");
+        else
+            return true;
     }
     return true;
 }
@@ -40,6 +42,35 @@ bool PuzzleParser::isCommentLine(std::string line)
             return true;
     }
     return false;
+}
+
+void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens) {
+    std::set<int> set;
+    for (int i = 0; i < tokens.size(); i++) {
+        std::string token = tokens[i];
+        for (int j = 0; j < token.length(); j++) {
+            if (isdigit(token[j]) == false) {
+                throw std::invalid_argument(token + " is not a number");
+            }
+        }
+        int number = std::stoi(token);
+        if (set.find(number) != set.end()) {
+            throw std::invalid_argument(token + " is a duplicate");
+        }
+        set.insert(number);
+    }
+    int amountOfNumbers = this->_lineLength * this->_lineLength;
+    if (set.size() != amountOfNumbers) {
+        throw std::invalid_argument("There are " + std::to_string(amountOfNumbers) + " numbers in the puzzle, but there are " + std::to_string(set.size()) + " unique numbers");
+    }
+    int i = 0;
+    for (std::set<int>::iterator it = set.begin(); it != set.end(); it++) {
+        int number = *it;
+        if (number != i) {
+            throw std::invalid_argument("There is no " + std::to_string(i) + " in the puzzle");
+        }
+        i++;
+    }
 }
 
 void PuzzleParser::parse()
@@ -70,11 +101,17 @@ void PuzzleParser::parse()
             throw std::invalid_argument("Comment line found in middle of file");
         if (lineCount == 0)
         {
-            if (parseLineLength(line) == false)
-                throw std::invalid_argument("Invalid line length");
+            try {
+                parseLineLength(line);
+            }
+            catch (std::exception &e) {
+                throw std::invalid_argument(e.what());
+            }
         }
         else
         {
+            const int oldLength = tokens.size();
+            std::cout << "Line: " << line << std::endl;
             const char *cstr = line.c_str();
             char *token = strtok((char *)cstr, &delimiter);
             while (token != NULL)
@@ -82,10 +119,26 @@ void PuzzleParser::parse()
                 tokens.push_back(std::string(token));
                 token = strtok(NULL, &delimiter);
             }
-            // compter uniquement avant '#'
+            std::cout << tokens.size() << " " << oldLength << std::endl;
+            if (tokens.size() - oldLength != _lineLength)
+                throw std::invalid_argument("Line " + std::to_string(lineCount) + " does not have " + std::to_string(_lineLength) + " number(s)");
         }
         lineCount++;
     }
+    checkArgumentsValidity(tokens);
+    file.close();
+
+    // debug
+    for (int i = 0; i < tokens.size(); i++)
+    {
+        if (i % _lineLength == 0)
+            std::cout << std::endl;
+        if (i == tokens.size() - 1)
+            std::cout << tokens[i];
+        else
+            std::cout << tokens[i] << " ";
+    }
+    std::cout << std::endl << std::endl;
 }
 
 // Constructor and destructor
@@ -102,7 +155,7 @@ PuzzleParser::PuzzleParser(std::string fileName) : _fileName(fileName)
     }
     catch (const std::exception &e)
     {
-        std::cerr << e.what() << std::endl;
+        throw std::invalid_argument(e.what());
     }
 }
 
@@ -112,7 +165,7 @@ PuzzleParser::~PuzzleParser() {}
 
 int PuzzleParser::getLineLength() const
 {
-    return lineLength;
+    return _lineLength;
 }
 
 std::string PuzzleParser::getFileName() const
@@ -124,5 +177,5 @@ std::string PuzzleParser::getFileName() const
 
 void PuzzleParser::setLineLength(int lineLength)
 {
-    this->lineLength = lineLength;
+    this->_lineLength = lineLength;
 }

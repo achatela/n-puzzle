@@ -4,13 +4,14 @@
 #include <vector>
 #include <stdexcept>
 #include <string.h>
+#include <set>
 
 class PuzzleParser
 {
 
 private:
     std::string _fileName;
-    int lineLength;
+    int _lineLength;
 
 public:
     // Constructor and destructor
@@ -21,6 +22,7 @@ public:
     bool isCommentLine(std::string line);
     bool parseLineLength(std::string line);
     void parse();
+    void checkArgumentsValidity(std::vector<std::string> &tokens);
 
     // Getters
     int getLineLength() const;
