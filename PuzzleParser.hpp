@@ -9,26 +9,27 @@
 
 class PuzzleParser
 {
+    private:
+        std::string _fileName;
+        std::vector<std::vector<int>> _puzzle;
+        int _lineLength;
 
-private:
-    std::string _fileName;
-    int _lineLength;
+    public:
+        // Constructor and destructor
+        PuzzleParser(std::string fileName);
+        ~PuzzleParser();
 
-public:
-    // Constructor and destructor
-    PuzzleParser(std::string fileName);
-    ~PuzzleParser();
+        // Parsing methods
+        bool isCommentLine(std::string line);
+        bool parseLineLength(std::string line);
+        void parse();
+        void checkArgumentsValidity(std::vector<std::string> &tokens);
 
-    // Parsing methods
-    bool isCommentLine(std::string line);
-    bool parseLineLength(std::string line);
-    void parse();
-    void checkArgumentsValidity(std::vector<std::string> &tokens);
+        // Getters
+        int getLineLength() const;
+        std::string getFileName() const;
+        std::vector<std::vector<int>> getPuzzle() const;
 
-    // Getters
-    int getLineLength() const;
-    std::string getFileName() const;
-
-    // Setters
-    void setLineLength(int lineLength);
+        // Setters
+        void setLineLength(int lineLength);
 };

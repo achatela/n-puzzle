@@ -75,6 +75,51 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens) {
         }
         i++;
     }
+    for (int i = 0; i < this->_lineLength; i++) {
+        std::vector<int> row;
+        for (int j = 0; j < this->_lineLength; j++) {
+            row.push_back(std::stoi(tokens[i * this->_lineLength + j]));
+        }
+        _puzzle.push_back(row);
+    }
+
+   
+    // check if puzzle is solvable (odd lineLength)
+    // an inversion is when a tile precedes another tile with a lower number on it
+    int inversions = 0;
+    for (int i = 0; i < tokens.size(); i++) {
+        int number = std::stoi(tokens[i]);
+        for (int j = i + 1; j < tokens.size(); j++) {
+            int nextNumber = std::stoi(tokens[j]);
+            if (number > nextNumber) {
+                inversions++;
+            }
+        }
+    }
+    if (this->_lineLength % 2 == 1 && inversions % 2 == 1) {
+        throw std::invalid_argument("Puzzle is not solvable");
+    }
+
+    // check if puzzle is solvable (even lineLength)
+    if (this->_lineLength % 2 == 0) {
+        int rowOfZero = 0;
+        for (int i = 0; i < this->_lineLength; i++) {
+            for (int j = 0; j < this->_lineLength; j++) {
+                if (this->_puzzle[i][j] == 0) {
+                    rowOfZero = i;
+                    break;
+                }
+            }
+        }
+        if (rowOfZero % 2 == 1 && inversions % 2 == 0) {
+            throw std::invalid_argument("Puzzle is not solvable");
+        }
+        else if (rowOfZero % 2 == 0 && inversions % 2 == 1) {
+            throw std::invalid_argument("Puzzle is not solvable");
+        }
+    }
+
+    std::cout << "Puzzle is solvable" << std::endl;
 }
 
 void PuzzleParser::parse()
@@ -127,18 +172,6 @@ void PuzzleParser::parse()
     }
     checkArgumentsValidity(tokens);
     file.close();
-
-    // debug
-    for (int i = 0; i < tokens.size(); i++)
-    {
-        if (i % _lineLength == 0)
-            std::cout << std::endl;
-        if (i == tokens.size() - 1)
-            std::cout << tokens[i];
-        else
-            std::cout << tokens[i] << " ";
-    }
-    std::cout << std::endl << std::endl;
 }
 
 // Constructor and destructor
@@ -171,6 +204,11 @@ int PuzzleParser::getLineLength() const
 std::string PuzzleParser::getFileName() const
 {
     return _fileName;
+}
+
+std::vector<std::vector<int>> PuzzleParser::getPuzzle() const
+{
+    return _puzzle;
 }
 
 // Setters
