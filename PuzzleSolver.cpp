@@ -14,15 +14,24 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength)
     std::vector<Node *> closedList;
 
     openList.push_back(_root);
-    while (openList.empty() == false){
+    while (!openList.empty()){
+        std::cout << "while loop" << std::endl;
         Node *currentNode = openList[0];
-        Node *upNode = new Node;
-        Node *downNode = new Node;
-        Node *leftNode = new Node;
-        Node *rightNode = new Node;
-        assignPuzzle(currentNode->puzzle, *upNode, *downNode, *leftNode, *rightNode);
-
-    }   
+        for (int i = 0; i < openList.size(); i++){
+            if (openList[i]->cost < currentNode->cost){
+                currentNode = openList[i];
+            }
+        }
+        openList.erase(std::remove(openList.begin(), openList.end(), currentNode), openList.end());
+        closedList.push_back(currentNode);
+        std::cout << "Current node: " << manhattanDistance(currentNode->puzzle) << std::endl;
+        if (manhattanDistance(currentNode->puzzle) == 0){
+            std::cout << "Solved!" << std::endl;
+            break;
+        }
+        addNeighbours(currentNode, openList, closedList);
+    }
+    std::cout << "End" << std::endl;
 }
 
 PuzzleSolver::~PuzzleSolver() { }
@@ -30,9 +39,75 @@ PuzzleSolver::~PuzzleSolver() { }
 
 // Solving methods
 
-void PuzzleSolver::assignPuzzle(std::vector<std::vector<int>> puzzle, Node & upNode, Node & downNode, Node & leftNode, Node & RightNode) {
-    return ;
+void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openList, std::vector<Node *> &closedList) {
+    std::vector<std::vector<int>> puzzle = currentNode->puzzle;
+    if (currentNode->direction == 'N'){
+        int upCost = 0;
+        int downCost = 0;
+        int leftCost = 0;
+        int rightCost = 0;
+        std::vector<std::vector<int>> upPuzzleResult = upPuzzle(puzzle);
+        if (upPuzzleResult != puzzle)
+            upCost = currentNode->cost + 1 + manhattanDistance(upPuzzleResult);
+        std::vector<std::vector<int>> downPuzzleResult = downPuzzle(puzzle);
+        if (downPuzzleResult != puzzle)
+            downCost = currentNode->cost + 1 + manhattanDistance(downPuzzleResult);
+        std::vector<std::vector<int>> leftPuzzleResult = leftPuzzle(puzzle);
+        if (leftPuzzleResult != puzzle)
+            leftCost = currentNode->cost + 1 + manhattanDistance(leftPuzzleResult);
+        std::vector<std::vector<int>> rightPuzzleResult = rightPuzzle(puzzle);
+        if (rightPuzzleResult != puzzle)
+            rightCost = currentNode->cost + 1 + manhattanDistance(rightPuzzleResult);
+        if (upCost != 0){
+            Node *upNode = new Node;
+            upNode->puzzle = upPuzzleResult;
+            upNode->parent = currentNode;
+            upNode->cost = upCost;
+            upNode->depth = currentNode->depth + 1;
+            upNode->direction = 'U';
+            openList.push_back(upNode);
+        }
+        if (downCost != 0){
+            Node *downNode = new Node;
+            downNode->puzzle = downPuzzleResult;
+            downNode->parent = currentNode;
+            downNode->cost = downCost;
+            downNode->depth = currentNode->depth + 1;
+            downNode->direction = 'D';
+            openList.push_back(downNode);
+        }
+        if (leftCost != 0){
+            Node *leftNode = new Node;
+            leftNode->puzzle = leftPuzzleResult;
+            leftNode->parent = currentNode;
+            leftNode->cost = leftCost;
+            leftNode->depth = currentNode->depth + 1;
+            leftNode->direction = 'L';
+            openList.push_back(leftNode);
+        }
+        if (rightCost != 0) {
+            Node *rightNode = new Node;
+            rightNode->puzzle = rightPuzzleResult;
+            rightNode->parent = currentNode;
+            rightNode->cost = rightCost;
+            rightNode->depth = currentNode->depth + 1;
+            rightNode->direction = 'R';
+            openList.push_back(rightNode);
+        }
+    }
+    else if (currentNode->direction == 'U'){
+    }
+    else if (currentNode->direction == 'D'){
+    }
+    else if (currentNode->direction == 'L'){
+    }
+    else if (currentNode->direction == 'R'){
+    }
+    else {
+        throw std::invalid_argument("Invalid direction");
+    }
 }
+
 
 int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle) {
     int manhattanDistance = 0;
@@ -49,6 +124,91 @@ int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle) {
         }
     }
     return manhattanDistance;
+}
+
+std::vector<std::vector<int>> PuzzleSolver::upPuzzle(std::vector<std::vector<int>> puzzle){
+    std::vector<std::vector<int>> upPuzzle = puzzle;
+    for (int i = 0; i < upPuzzle.size(); i++){
+        for (int j = 0; j < upPuzzle[i].size(); j++){
+            if (upPuzzle[i][j] == 0){
+                if (i == 0){
+                    return puzzle;
+                }
+                else {
+                    upPuzzle[i][j] = upPuzzle[i - 1][j];
+                    upPuzzle[i - 1][j] = 0;
+                    break;
+                }
+            }
+        }
+    }
+    return upPuzzle;
+}
+
+std::vector<std::vector<int>> PuzzleSolver::downPuzzle(std::vector<std::vector<int>> puzzle) {
+    std::vector<std::vector<int>> downPuzzle = puzzle;
+
+    for (int i = 0; i < downPuzzle.size(); i++)
+    {
+        for (int j = 0; j < downPuzzle[i].size(); j++)
+        {
+            std::cout << downPuzzle[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    for (int i = 0; i < downPuzzle.size(); i++) {
+        for (int j = 0; j < downPuzzle[i].size(); j++) {
+            if (downPuzzle[i][j] == 0) {
+                if (i == downPuzzle.size() - 1) {
+                    return puzzle;
+                }
+                else {
+                    downPuzzle[i][j] = downPuzzle[i + 1][j];
+                    downPuzzle[i + 1][j] = 0;
+                    break;
+                }
+            }
+        }
+    }
+    return downPuzzle;
+}
+
+std::vector<std::vector<int>> PuzzleSolver::leftPuzzle(std::vector<std::vector<int>> puzzle) {
+    std::vector<std::vector<int>> leftPuzzle = puzzle;
+    for (int i = 0; i < leftPuzzle.size(); i++) {
+        for (int j = 0; j < leftPuzzle[i].size(); j++) {
+            if (leftPuzzle[i][j] == 0) {
+                if (j == 0) {
+                    return puzzle;
+                }
+                else {
+                    leftPuzzle[i][j] = leftPuzzle[i][j - 1];
+                    leftPuzzle[i][j - 1] = 0;
+                    break;
+                }
+            }
+        }
+    }
+    return leftPuzzle;
+}
+
+std::vector<std::vector<int>> PuzzleSolver::rightPuzzle(std::vector<std::vector<int>> puzzle) {
+    std::vector<std::vector<int>> rightPuzzle = puzzle;
+    for (int i = 0; i < rightPuzzle.size(); i++) {
+        for (int j = 0; j < rightPuzzle[i].size(); j++) {
+            if (rightPuzzle[i][j] == 0) {
+                if (j == rightPuzzle[i].size() - 1) {
+                    return puzzle;
+                }
+                else {
+                    rightPuzzle[i][j] = rightPuzzle[i][j + 1];
+                    rightPuzzle[i][j + 1] = 0;
+                    break;
+                }
+            }
+        }
+    }
+    return rightPuzzle;
 }
 
 

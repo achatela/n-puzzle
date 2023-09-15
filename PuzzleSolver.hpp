@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <algorithm>
 
 class PuzzleSolver {
 
@@ -26,7 +27,11 @@ class PuzzleSolver {
 
         // Solving methods
         int manhattanDistance(std::vector<std::vector<int>> puzzle);
-        void assignPuzzle(std::vector<std::vector<int>> puzzle, Node & upNode, Node & downNode, Node & leftNode, Node & RightNode);
+        void addNeighbours(Node * currentNode, std::vector<Node *> &openList, std::vector<Node *> &closedList);
+        std::vector<std::vector<int>> upPuzzle(std::vector<std::vector<int>> puzzle);
+        std::vector<std::vector<int>> downPuzzle(std::vector<std::vector<int>> puzzle);
+        std::vector<std::vector<int>> leftPuzzle(std::vector<std::vector<int>> puzzle);
+        std::vector<std::vector<int>> rightPuzzle(std::vector<std::vector<int>> puzzle);
 
         // Getters
         int getLineLength() const;
