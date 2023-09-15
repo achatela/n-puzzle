@@ -91,6 +91,8 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens) {
     //     int number = std::stoi(tokens[i]);
     //     for (int j = i + 1; j < tokens.size(); j++) {
     //         int nextNumber = std::stoi(tokens[j]);
+    //         if (nextNumber == 0)
+    //             continue;
     //         if (number > nextNumber) {
     //             inversions++;
     //         }
