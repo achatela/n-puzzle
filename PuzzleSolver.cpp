@@ -1,7 +1,8 @@
 #include "PuzzleSolver.hpp"
 
 // Constructor and destructor
-PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength) : _puzzle(puzzle), _lineLength(lineLength) {
+PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength) : _puzzle(puzzle), _lineLength(lineLength)
+{
     std::cout << "Initial manhattan distance: " << manhattanDistance(puzzle) << std::endl;
     _root = new Node;
     _root->puzzle = puzzle;
@@ -14,31 +15,27 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength)
     std::vector<Node *> closedList;
 
     openList.push_back(_root);
-    while (!openList.empty()){
+    while (!openList.empty())
+    {
         Node *currentNode = openList[0];
         int j = 0;
-        for (int i = 0; i < openList.size(); i++){
-            if (openList[i]->cost < currentNode->cost){
+        for (int i = 0; i < openList.size(); i++)
+        {
+            if (openList[i]->cost < currentNode->cost)
+            {
                 currentNode = openList[i];
                 j = i;
             }
         }
         openList.erase(openList.begin() + j);
         closedList.push_back(currentNode);
-        // for (int i = 0; i < currentNode->puzzle.size(); i++){
-        //     for (int j = 0; j < currentNode->puzzle[i].size(); j++){
-        //         if (j == currentNode->puzzle[i].size() - 1)
-        //             std::cout << currentNode->puzzle[i][j];
-        //         else
-        //             std::cout << currentNode->puzzle[i][j] << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
-        // std::cout << std::endl;
-        if (manhattanDistance(currentNode->puzzle) == 0){
+        if (manhattanDistance(currentNode->puzzle) == 0)
+        {
             std::cout << "Solved!" << std::endl;
-            for (int i = 0; i < currentNode->puzzle.size(); i++){
-                for (int j = 0; j < currentNode->puzzle[i].size(); j++){
+            for (int i = 0; i < currentNode->puzzle.size(); i++)
+            {
+                for (int j = 0; j < currentNode->puzzle[i].size(); j++)
+                {
                     if (j == currentNode->puzzle[i].size() - 1)
                         std::cout << currentNode->puzzle[i][j];
                     else
@@ -46,20 +43,29 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength)
                 }
                 std::cout << std::endl;
             }
+            std::string solution = "";
+            while (currentNode->parent != nullptr)
+            {
+                solution += currentNode->direction;
+                currentNode = currentNode->parent;
+            }
+            std::reverse(solution.begin(), solution.end());
+            std::cout << "Solution: " << solution << std::endl;
             break;
         }
         addNeighbours(currentNode, openList, closedList);
     }
 }
 
-PuzzleSolver::~PuzzleSolver() { }
-
+PuzzleSolver::~PuzzleSolver() {}
 
 // Solving methods
 
-void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openList, std::vector<Node *> &closedList) {
+void PuzzleSolver::addNeighbours(Node *currentNode, std::vector<Node *> &openList, std::vector<Node *> &closedList)
+{
     std::vector<std::vector<int>> puzzle = currentNode->puzzle;
-    if (currentNode->direction == 'N'){
+    if (currentNode->direction == 'N')
+    {
         int upCost = -1;
         int downCost = -1;
         int leftCost = -1;
@@ -76,7 +82,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
         std::vector<std::vector<int>> rightPuzzleResult = rightPuzzle(puzzle);
         if (rightPuzzleResult != puzzle)
             rightCost = currentNode->depth + 1 + manhattanDistance(rightPuzzleResult);
-        if (upCost != -1){
+        if (upCost != -1)
+        {
             Node *upNode = new Node;
             upNode->puzzle = upPuzzleResult;
             upNode->parent = currentNode;
@@ -85,7 +92,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             upNode->direction = 'U';
             openList.push_back(upNode);
         }
-        if (downCost != -1){
+        if (downCost != -1)
+        {
             Node *downNode = new Node;
             downNode->puzzle = downPuzzleResult;
             downNode->parent = currentNode;
@@ -94,7 +102,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             downNode->direction = 'D';
             openList.push_back(downNode);
         }
-        if (leftCost != -1){
+        if (leftCost != -1)
+        {
             Node *leftNode = new Node;
             leftNode->puzzle = leftPuzzleResult;
             leftNode->parent = currentNode;
@@ -103,7 +112,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             leftNode->direction = 'L';
             openList.push_back(leftNode);
         }
-        if (rightCost != -1) {
+        if (rightCost != -1)
+        {
             Node *rightNode = new Node;
             rightNode->puzzle = rightPuzzleResult;
             rightNode->parent = currentNode;
@@ -113,7 +123,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             openList.push_back(rightNode);
         }
     }
-    else if (currentNode->direction == 'U'){
+    else if (currentNode->direction == 'U')
+    {
         int upCost = -1;
         int leftCost = -1;
         int rightCost = -1;
@@ -126,7 +137,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
         std::vector<std::vector<int>> rightPuzzleResult = rightPuzzle(puzzle);
         if (rightPuzzleResult != puzzle)
             rightCost = currentNode->depth + 1 + manhattanDistance(rightPuzzleResult);
-        if (upCost != -1){
+        if (upCost != -1)
+        {
             Node *upNode = new Node;
             upNode->puzzle = upPuzzleResult;
             upNode->parent = currentNode;
@@ -134,10 +146,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             upNode->depth = currentNode->depth + 1;
             upNode->direction = 'U';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == upNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == upNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > upNode->cost){
+                    if (openList[i]->cost > upNode->cost)
+                    {
                         openList[i]->cost = upNode->cost;
                         openList[i]->parent = upNode->parent;
                         openList[i]->depth = upNode->depth;
@@ -146,10 +161,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == upNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == upNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > upNode->cost){
+                    if (closedList[i]->cost > upNode->cost)
+                    {
                         closedList[i]->cost = upNode->cost;
                         closedList[i]->parent = upNode->parent;
                         closedList[i]->depth = upNode->depth;
@@ -162,7 +180,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete upNode;
         }
-        if (leftCost != -1){
+        if (leftCost != -1)
+        {
             Node *leftNode = new Node;
             leftNode->puzzle = leftPuzzleResult;
             leftNode->parent = currentNode;
@@ -170,10 +189,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             leftNode->depth = currentNode->depth + 1;
             leftNode->direction = 'L';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == leftNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == leftNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > leftNode->cost){
+                    if (openList[i]->cost > leftNode->cost)
+                    {
                         openList[i]->cost = leftNode->cost;
                         openList[i]->parent = leftNode->parent;
                         openList[i]->depth = leftNode->depth;
@@ -182,10 +204,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == leftNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == leftNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > leftNode->cost){
+                    if (closedList[i]->cost > leftNode->cost)
+                    {
                         closedList[i]->cost = leftNode->cost;
                         closedList[i]->parent = leftNode->parent;
                         closedList[i]->depth = leftNode->depth;
@@ -198,7 +223,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete leftNode;
         }
-        if (rightCost != -1) {
+        if (rightCost != -1)
+        {
             Node *rightNode = new Node;
             rightNode->puzzle = rightPuzzleResult;
             rightNode->parent = currentNode;
@@ -206,10 +232,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             rightNode->depth = currentNode->depth + 1;
             rightNode->direction = 'R';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == rightNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == rightNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > rightNode->cost){
+                    if (openList[i]->cost > rightNode->cost)
+                    {
                         openList[i]->cost = rightNode->cost;
                         openList[i]->parent = rightNode->parent;
                         openList[i]->depth = rightNode->depth;
@@ -218,10 +247,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == rightNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == rightNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > rightNode->cost){
+                    if (closedList[i]->cost > rightNode->cost)
+                    {
                         closedList[i]->cost = rightNode->cost;
                         closedList[i]->parent = rightNode->parent;
                         closedList[i]->depth = rightNode->depth;
@@ -235,7 +267,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 delete rightNode;
         }
     }
-    else if (currentNode->direction == 'D'){
+    else if (currentNode->direction == 'D')
+    {
         int downCost = -1;
         int leftCost = -1;
         int rightCost = -1;
@@ -248,7 +281,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
         std::vector<std::vector<int>> rightPuzzleResult = rightPuzzle(puzzle);
         if (rightPuzzleResult != puzzle)
             rightCost = currentNode->depth + 1 + manhattanDistance(rightPuzzleResult);
-        if (downCost != -1){
+        if (downCost != -1)
+        {
             Node *downNode = new Node;
             downNode->puzzle = downPuzzleResult;
             downNode->parent = currentNode;
@@ -256,10 +290,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             downNode->depth = currentNode->depth + 1;
             downNode->direction = 'D';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == downNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == downNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > downNode->cost){
+                    if (openList[i]->cost > downNode->cost)
+                    {
                         openList[i]->cost = downNode->cost;
                         openList[i]->parent = downNode->parent;
                         openList[i]->depth = downNode->depth;
@@ -268,10 +305,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == downNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == downNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > downNode->cost){
+                    if (closedList[i]->cost > downNode->cost)
+                    {
                         closedList[i]->cost = downNode->cost;
                         closedList[i]->parent = downNode->parent;
                         closedList[i]->depth = downNode->depth;
@@ -284,7 +324,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete downNode;
         }
-        if (leftCost != -1){
+        if (leftCost != -1)
+        {
             Node *leftNode = new Node;
             leftNode->puzzle = leftPuzzleResult;
             leftNode->parent = currentNode;
@@ -292,10 +333,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             leftNode->depth = currentNode->depth + 1;
             leftNode->direction = 'L';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == leftNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == leftNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > leftNode->cost){
+                    if (openList[i]->cost > leftNode->cost)
+                    {
                         openList[i]->cost = leftNode->cost;
                         openList[i]->parent = leftNode->parent;
                         openList[i]->depth = leftNode->depth;
@@ -304,10 +348,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == leftNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == leftNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > leftNode->cost){
+                    if (closedList[i]->cost > leftNode->cost)
+                    {
                         closedList[i]->cost = leftNode->cost;
                         closedList[i]->parent = leftNode->parent;
                         closedList[i]->depth = leftNode->depth;
@@ -320,7 +367,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete leftNode;
         }
-        if (rightCost != -1) {
+        if (rightCost != -1)
+        {
             Node *rightNode = new Node;
             rightNode->puzzle = rightPuzzleResult;
             rightNode->parent = currentNode;
@@ -328,10 +376,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             rightNode->depth = currentNode->depth + 1;
             rightNode->direction = 'R';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == rightNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == rightNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > rightNode->cost){
+                    if (openList[i]->cost > rightNode->cost)
+                    {
                         openList[i]->cost = rightNode->cost;
                         openList[i]->parent = rightNode->parent;
                         openList[i]->depth = rightNode->depth;
@@ -340,10 +391,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == rightNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == rightNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > rightNode->cost){
+                    if (closedList[i]->cost > rightNode->cost)
+                    {
                         closedList[i]->cost = rightNode->cost;
                         closedList[i]->parent = rightNode->parent;
                         closedList[i]->depth = rightNode->depth;
@@ -357,7 +411,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 delete rightNode;
         }
     }
-    else if (currentNode->direction == 'L'){
+    else if (currentNode->direction == 'L')
+    {
         int upCost = -1;
         int downCost = -1;
         int leftCost = -1;
@@ -370,7 +425,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
         std::vector<std::vector<int>> leftPuzzleResult = leftPuzzle(puzzle);
         if (leftPuzzleResult != puzzle)
             leftCost = currentNode->depth + 1 + manhattanDistance(leftPuzzleResult);
-        if (upCost != -1){
+        if (upCost != -1)
+        {
             Node *upNode = new Node;
             upNode->puzzle = upPuzzleResult;
             upNode->parent = currentNode;
@@ -378,10 +434,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             upNode->depth = currentNode->depth + 1;
             upNode->direction = 'U';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == upNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == upNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > upNode->cost){
+                    if (openList[i]->cost > upNode->cost)
+                    {
                         openList[i]->cost = upNode->cost;
                         openList[i]->parent = upNode->parent;
                         openList[i]->depth = upNode->depth;
@@ -390,10 +449,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == upNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == upNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > upNode->cost){
+                    if (closedList[i]->cost > upNode->cost)
+                    {
                         closedList[i]->cost = upNode->cost;
                         closedList[i]->parent = upNode->parent;
                         closedList[i]->depth = upNode->depth;
@@ -406,7 +468,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete upNode;
         }
-        if (downCost != -1){
+        if (downCost != -1)
+        {
             Node *downNode = new Node;
             downNode->puzzle = downPuzzleResult;
             downNode->parent = currentNode;
@@ -414,10 +477,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             downNode->depth = currentNode->depth + 1;
             downNode->direction = 'D';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == downNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == downNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > downNode->cost){
+                    if (openList[i]->cost > downNode->cost)
+                    {
                         openList[i]->cost = downNode->cost;
                         openList[i]->parent = downNode->parent;
                         openList[i]->depth = downNode->depth;
@@ -426,10 +492,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == downNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == downNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > downNode->cost){
+                    if (closedList[i]->cost > downNode->cost)
+                    {
                         closedList[i]->cost = downNode->cost;
                         closedList[i]->parent = downNode->parent;
                         closedList[i]->depth = downNode->depth;
@@ -442,7 +511,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete downNode;
         }
-        if (leftCost != -1){
+        if (leftCost != -1)
+        {
             Node *leftNode = new Node;
             leftNode->puzzle = leftPuzzleResult;
             leftNode->parent = currentNode;
@@ -450,10 +520,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             leftNode->depth = currentNode->depth + 1;
             leftNode->direction = 'L';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == leftNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == leftNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > leftNode->cost){
+                    if (openList[i]->cost > leftNode->cost)
+                    {
                         openList[i]->cost = leftNode->cost;
                         openList[i]->parent = leftNode->parent;
                         openList[i]->depth = leftNode->depth;
@@ -462,10 +535,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == leftNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == leftNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > leftNode->cost){
+                    if (closedList[i]->cost > leftNode->cost)
+                    {
                         closedList[i]->cost = leftNode->cost;
                         closedList[i]->parent = leftNode->parent;
                         closedList[i]->depth = leftNode->depth;
@@ -479,7 +555,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 delete leftNode;
         }
     }
-    else if (currentNode->direction == 'R'){
+    else if (currentNode->direction == 'R')
+    {
         int upCost = -1;
         int downCost = -1;
         int rightCost = -1;
@@ -492,7 +569,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
         std::vector<std::vector<int>> rightPuzzleResult = rightPuzzle(puzzle);
         if (rightPuzzleResult != puzzle)
             rightCost = currentNode->depth + 1 + manhattanDistance(rightPuzzleResult);
-        if (upCost != -1){
+        if (upCost != -1)
+        {
             Node *upNode = new Node;
             upNode->puzzle = upPuzzleResult;
             upNode->parent = currentNode;
@@ -500,10 +578,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             upNode->depth = currentNode->depth + 1;
             upNode->direction = 'U';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == upNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == upNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > upNode->cost){
+                    if (openList[i]->cost > upNode->cost)
+                    {
                         openList[i]->cost = upNode->cost;
                         openList[i]->parent = upNode->parent;
                         openList[i]->depth = upNode->depth;
@@ -512,10 +593,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == upNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == upNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > upNode->cost){
+                    if (closedList[i]->cost > upNode->cost)
+                    {
                         closedList[i]->cost = upNode->cost;
                         closedList[i]->parent = upNode->parent;
                         closedList[i]->depth = upNode->depth;
@@ -528,7 +612,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete upNode;
         }
-        if (downCost != -1){
+        if (downCost != -1)
+        {
             Node *downNode = new Node;
             downNode->puzzle = downPuzzleResult;
             downNode->parent = currentNode;
@@ -536,10 +621,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             downNode->depth = currentNode->depth + 1;
             downNode->direction = 'D';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == downNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == downNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > downNode->cost){
+                    if (openList[i]->cost > downNode->cost)
+                    {
                         openList[i]->cost = downNode->cost;
                         openList[i]->parent = downNode->parent;
                         openList[i]->depth = downNode->depth;
@@ -548,10 +636,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == downNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == downNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > downNode->cost){
+                    if (closedList[i]->cost > downNode->cost)
+                    {
                         closedList[i]->cost = downNode->cost;
                         closedList[i]->parent = downNode->parent;
                         closedList[i]->depth = downNode->depth;
@@ -564,7 +655,8 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             else
                 delete downNode;
         }
-        if (rightCost != -1) {
+        if (rightCost != -1)
+        {
             Node *rightNode = new Node;
             rightNode->puzzle = rightPuzzleResult;
             rightNode->parent = currentNode;
@@ -572,10 +664,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
             rightNode->depth = currentNode->depth + 1;
             rightNode->direction = 'R';
             bool inOpenList = false;
-            for (int i = 0; i < openList.size(); i++){
-                if (openList[i]->puzzle == rightNode->puzzle){
+            for (int i = 0; i < openList.size(); i++)
+            {
+                if (openList[i]->puzzle == rightNode->puzzle)
+                {
                     inOpenList = true;
-                    if (openList[i]->cost > rightNode->cost){
+                    if (openList[i]->cost > rightNode->cost)
+                    {
                         openList[i]->cost = rightNode->cost;
                         openList[i]->parent = rightNode->parent;
                         openList[i]->depth = rightNode->depth;
@@ -584,10 +679,13 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 }
             }
             bool inClosedList = false;
-            for (int i = 0; i < closedList.size(); i++){
-                if (closedList[i]->puzzle == rightNode->puzzle){
+            for (int i = 0; i < closedList.size(); i++)
+            {
+                if (closedList[i]->puzzle == rightNode->puzzle)
+                {
                     inClosedList = true;
-                    if (closedList[i]->cost > rightNode->cost){
+                    if (closedList[i]->cost > rightNode->cost)
+                    {
                         closedList[i]->cost = rightNode->cost;
                         closedList[i]->parent = rightNode->parent;
                         closedList[i]->depth = rightNode->depth;
@@ -601,17 +699,20 @@ void PuzzleSolver::addNeighbours(Node * currentNode, std::vector<Node *> &openLi
                 delete rightNode;
         }
     }
-    else {
+    else
+    {
         throw std::invalid_argument("Invalid direction");
     }
 }
 
-
-int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle) {
+int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle)
+{
     int manhattanDistance = 0;
 
-    for (auto i = 0; i < puzzle.size(); i++) {
-        for (auto j = 0; j < puzzle[i].size(); j++) {
+    for (auto i = 0; i < puzzle.size(); i++)
+    {
+        for (auto j = 0; j < puzzle[i].size(); j++)
+        {
             int value = puzzle[i][j];
             if (value == 0)
                 continue;
@@ -624,15 +725,21 @@ int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle) {
     return manhattanDistance;
 }
 
-std::vector<std::vector<int>> PuzzleSolver::upPuzzle(std::vector<std::vector<int>> puzzle){
+std::vector<std::vector<int>> PuzzleSolver::upPuzzle(std::vector<std::vector<int>> puzzle)
+{
     std::vector<std::vector<int>> upPuzzle = puzzle;
-    for (int i = 0; i < upPuzzle.size(); i++){
-        for (int j = 0; j < upPuzzle[i].size(); j++){
-            if (upPuzzle[i][j] == 0){
-                if (i == 0){
+    for (int i = 0; i < upPuzzle.size(); i++)
+    {
+        for (int j = 0; j < upPuzzle[i].size(); j++)
+        {
+            if (upPuzzle[i][j] == 0)
+            {
+                if (i == 0)
+                {
                     return puzzle;
                 }
-                else {
+                else
+                {
                     upPuzzle[i][j] = upPuzzle[i - 1][j];
                     upPuzzle[i - 1][j] = 0;
                     return upPuzzle;
@@ -643,16 +750,22 @@ std::vector<std::vector<int>> PuzzleSolver::upPuzzle(std::vector<std::vector<int
     return upPuzzle;
 }
 
-std::vector<std::vector<int>> PuzzleSolver::downPuzzle(std::vector<std::vector<int>> puzzle) {
+std::vector<std::vector<int>> PuzzleSolver::downPuzzle(std::vector<std::vector<int>> puzzle)
+{
     std::vector<std::vector<int>> downPuzzle = puzzle;
 
-    for (int i = 0; i < downPuzzle.size(); i++) {
-        for (int j = 0; j < downPuzzle[i].size(); j++) {
-            if (downPuzzle[i][j] == 0) {
-                if (i == downPuzzle.size() - 1) {
+    for (int i = 0; i < downPuzzle.size(); i++)
+    {
+        for (int j = 0; j < downPuzzle[i].size(); j++)
+        {
+            if (downPuzzle[i][j] == 0)
+            {
+                if (i == downPuzzle.size() - 1)
+                {
                     return puzzle;
                 }
-                else {
+                else
+                {
                     downPuzzle[i][j] = downPuzzle[i + 1][j];
                     downPuzzle[i + 1][j] = 0;
                     return downPuzzle;
@@ -663,15 +776,21 @@ std::vector<std::vector<int>> PuzzleSolver::downPuzzle(std::vector<std::vector<i
     return downPuzzle;
 }
 
-std::vector<std::vector<int>> PuzzleSolver::leftPuzzle(std::vector<std::vector<int>> puzzle) {
+std::vector<std::vector<int>> PuzzleSolver::leftPuzzle(std::vector<std::vector<int>> puzzle)
+{
     std::vector<std::vector<int>> leftPuzzle = puzzle;
-    for (int i = 0; i < leftPuzzle.size(); i++) {
-        for (int j = 0; j < leftPuzzle[i].size(); j++) {
-            if (leftPuzzle[i][j] == 0) {
-                if (j == 0) {
+    for (int i = 0; i < leftPuzzle.size(); i++)
+    {
+        for (int j = 0; j < leftPuzzle[i].size(); j++)
+        {
+            if (leftPuzzle[i][j] == 0)
+            {
+                if (j == 0)
+                {
                     return puzzle;
                 }
-                else {
+                else
+                {
                     leftPuzzle[i][j] = leftPuzzle[i][j - 1];
                     leftPuzzle[i][j - 1] = 0;
                     return leftPuzzle;
@@ -682,15 +801,21 @@ std::vector<std::vector<int>> PuzzleSolver::leftPuzzle(std::vector<std::vector<i
     return leftPuzzle;
 }
 
-std::vector<std::vector<int>> PuzzleSolver::rightPuzzle(std::vector<std::vector<int>> puzzle) {
+std::vector<std::vector<int>> PuzzleSolver::rightPuzzle(std::vector<std::vector<int>> puzzle)
+{
     std::vector<std::vector<int>> rightPuzzle = puzzle;
-    for (int i = 0; i < rightPuzzle.size(); i++) {
-        for (int j = 0; j < rightPuzzle[i].size(); j++) {
-            if (rightPuzzle[i][j] == 0) {
-                if (j == rightPuzzle[i].size() - 1) {
+    for (int i = 0; i < rightPuzzle.size(); i++)
+    {
+        for (int j = 0; j < rightPuzzle[i].size(); j++)
+        {
+            if (rightPuzzle[i][j] == 0)
+            {
+                if (j == rightPuzzle[i].size() - 1)
+                {
                     return puzzle;
                 }
-                else {
+                else
+                {
                     rightPuzzle[i][j] = rightPuzzle[i][j + 1];
                     rightPuzzle[i][j + 1] = 0;
                     return rightPuzzle;
@@ -700,7 +825,6 @@ std::vector<std::vector<int>> PuzzleSolver::rightPuzzle(std::vector<std::vector<
     }
     return rightPuzzle;
 }
-
 
 // Getters
 
