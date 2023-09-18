@@ -3,7 +3,6 @@
 // Constructor and destructor
 PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength, std::string heuristicInput) : _puzzle(puzzle), _lineLength(lineLength)
 {
-    std::cout << "Initial manhattan distance: " << manhattanDistance(puzzle) << std::endl;
     _root = new Node;
     _root->puzzle = puzzle;
     _root->parent = nullptr;
@@ -20,6 +19,8 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
         heuristic = &PuzzleSolver::manhattanDistance;
     else if (heuristicInput == "linear")
         heuristic = &PuzzleSolver::linearConflict;
+    else if (heuristicInput == "bonus_uniform")
+        heuristic = &PuzzleSolver::uniformCostFakeHeuristic;
     else
         throw std::invalid_argument("Invalid heuristic");
 
@@ -73,6 +74,11 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
 PuzzleSolver::~PuzzleSolver() {}
 
 // Solving methods
+
+int PuzzleSolver::uniformCostFakeHeuristic(std::vector<std::vector<int>> puzzle)
+{
+    return 0;
+}
 
 void PuzzleSolver::addNeighbours(Node *currentNode, std::vector<Node *> &openList, std::vector<Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle))
 {
