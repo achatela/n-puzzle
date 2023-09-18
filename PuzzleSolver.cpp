@@ -11,6 +11,8 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength)
     _root->depth = 0;
     _root->direction = 'N'; // none
 
+    int timeComplexity = 0;
+
     std::vector<Node *> openList;
     std::vector<Node *> closedList;
 
@@ -27,6 +29,7 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength)
                 j = i;
             }
         }
+        timeComplexity++;
         openList.erase(openList.begin() + j);
         closedList.push_back(currentNode);
         if (manhattanDistance(currentNode->puzzle) == 0)
@@ -50,6 +53,9 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength)
                 currentNode = currentNode->parent;
             }
             std::reverse(solution.begin(), solution.end());
+            std::cout << "Time complexity: " << timeComplexity << std::endl;
+            std::cout << "Space complexity: " << openList.size() + closedList.size() << std::endl;
+            std::cout << "Number of moves required " << solution.length() << std::endl;
             std::cout << "Solution: " << solution << std::endl;
             break;
         }
