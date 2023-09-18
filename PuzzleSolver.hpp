@@ -22,12 +22,13 @@ class PuzzleSolver {
 
     public:
         // Constructor and destructor
-        PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength);
+        PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength, std::string heuristicInput);
         ~PuzzleSolver();
 
         // Solving methods
         int manhattanDistance(std::vector<std::vector<int>> puzzle);
-        void addNeighbours(Node * currentNode, std::vector<Node *> &openList, std::vector<Node *> &closedList);
+        int linearConflict(std::vector<std::vector<int>> puzzle);
+        void addNeighbours(Node * currentNode, std::vector<Node *> &openList, std::vector<Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>>));
         std::vector<std::vector<int>> upPuzzle(std::vector<std::vector<int>> puzzle);
         std::vector<std::vector<int>> downPuzzle(std::vector<std::vector<int>> puzzle);
         std::vector<std::vector<int>> leftPuzzle(std::vector<std::vector<int>> puzzle);

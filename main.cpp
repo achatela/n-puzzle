@@ -50,8 +50,8 @@ int main(int argc, char **argv)
     srand(time(NULL));
     try
     {
-        if (argc > 2)
-            throw std::invalid_argument("Usage: ./n-puzzle <file>");
+        if (argc != 3 && argc != 1)
+            throw std::invalid_argument("Usage: ./n-puzzle <file>.txt <heuristic> (manhattan|linear)");
         else if (argc == 1){
             std::string fileName = generatePuzzle();
 
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
                 std::cout << std::endl;
             }
 
-            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength());
+            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength(), std::string("manhattan"));
         }
         else {
             PuzzleParser parser(argv[1]);
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
                 std::cout << std::endl;
             }
 
-            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength());
+            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength(), std::string(argv[2]));
         }
     }
     catch (const std::exception &e)
