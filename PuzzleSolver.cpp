@@ -1,6 +1,29 @@
 #include "PuzzleSolver.hpp"
 
 // Constructor and destructor
+void PuzzleSolver::setSnailPuzzle()
+{
+    if (_lineLength == 3)
+    {
+        _snailSolution = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
+    }
+    else if (_lineLength == 4)
+    {
+        _snailSolution = {{1, 2, 3, 4}, {12, 13, 14, 5}, {11, 0, 15, 6}, {10, 9, 8, 7}};
+    }
+    else if (_lineLength == 5)
+    {
+        _snailSolution = {{1, 2, 3, 4, 5}, {16, 17, 18, 19, 6}, {15, 24, 0, 20, 7}, {14, 23, 22, 21, 8}, {13, 12, 11, 10, 9}};
+    }
+    for (int i = 0; i < _snailSolution.size(); i++)
+    {
+        for (int j = 0; j < _snailSolution[i].size(); j++)
+        {
+            _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
+        }
+    }
+}
+
 PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength, std::string heuristicInput) : _puzzle(puzzle), _lineLength(lineLength)
 {
     _root = new Node;
@@ -10,6 +33,7 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
     _root->depth = 0;
     _root->direction = 'N'; // none
 
+    setSnailPuzzle();
     int timeComplexity = 0;
 
     std::vector<Node *> openList;
@@ -724,68 +748,129 @@ void PuzzleSolver::addNeighbours(Node *currentNode, std::vector<Node *> &openLis
     }
 }
 
-int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle) {
+int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
+{
     int linearConflict = manhattanDistance(puzzle);
 
-    for (int rows = 0; rows < puzzle.size(); rows++) {
-        for (int row = 0; row < puzzle[rows].size(); row++) {
+    for (int rows = 0; rows < puzzle.size(); rows++)
+    {
+        for (int row = 0; row < puzzle[rows].size(); row++)
+        {
             int tile = puzzle[rows][row];
             if (tile == 0)
                 continue;
-            else if (tile != (rows * _lineLength) + (row + 1)) {
-                for (int rightTiles = row + 1; rightTiles < puzzle[rows].size(); rightTiles++) {
-                    int rightTile = puzzle[rows][rightTiles];
-                    if (rightTile == 0)
+            else
+            {
+                for (int otherTiles = 0; otherTiles < puzzle[rows].size(); otherTiles++)
+                {
+                    if (otherTiles == row)
                         continue;
-                    else if (rightTile != (rows * _lineLength) + (rightTiles + 1)) {
-                        if (tile > rightTile)
+                    int otherTile = puzzle[rows][otherTiles];
+                    if (otherTile == 0)
+                        continue;
+                    else
+                    {
+                        if ((tile > otherTile && row < otherTiles) || (tile < otherTile && row > otherTiles))
                             linearConflict++;
                     }
                 }
             }
         }
     }
-    for (int columns = 0; columns < puzzle.size(); columns++) {
-        for (int column = 0; column < puzzle[columns].size(); column++) {
-            int tile = puzzle[columns][column];
+    for (int columns = 0; columns < puzzle.size(); columns++)
+    {
+        for (int column = 0; column < puzzle[columns].size(); column++)
+        {
+            int tile = puzzle[column][columns];
             if (tile == 0)
                 continue;
-            else if (tile != (columns * _lineLength) + (column + 1)) {
-                for (int downTiles = column + 1; downTiles < puzzle[columns].size(); downTiles++) {
-                    int downTile = puzzle[columns][downTiles];
-                    if (downTile == 0)
+            else
+            {
+                for (int otherTiles = 0; otherTiles < puzzle[columns].size(); otherTiles++)
+                {
+                    if (otherTiles == column)
                         continue;
-                    else if (downTile != (columns * _lineLength) + (downTiles + 1)) {
-                        if (tile > downTile)
+                    int otherTile = puzzle[otherTiles][columns];
+                    if (otherTile == 0)
+                        continue;
+                    else
+                    {
+                        if ((tile > otherTile && column < otherTiles) || (tile < otherTile && column > otherTiles))
                             linearConflict++;
                     }
                 }
             }
         }
     }
+    // for (int rows = 0; rows < puzzle.size(); rows++)
+    // {
+    //     for (int row = 0; row < puzzle[rows].size(); row++)
+    //     {
+    //         int tile = puzzle[rows][row];
+    //         if (tile == 0)
+    //             continue;
+    //         else if (tile != (rows * _lineLength) + (row + 1))
+    //         {
+    //             for (int rightTiles = row + 1; rightTiles < puzzle[rows].size(); rightTiles++)
+    //             {
+    //                 int rightTile = puzzle[rows][rightTiles];
+    //                 if (rightTile == 0)
+    //                     continue;
+    //                 else if (rightTile != (rows * _lineLength) + (rightTiles + 1))
+    //                 {
+    //                     if (tile > rightTile)
+    //                         linearConflict++;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // for (int columns = 0; columns < puzzle.size(); columns++)
+    // {
+    //     for (int column = 0; column < puzzle[columns].size(); column++)
+    //     {
+    //         int tile = puzzle[columns][column];
+    //         if (tile == 0)
+    //             continue;
+    //         else if (tile != (columns * _lineLength) + (column + 1))
+    //         {
+    //             for (int downTiles = column + 1; downTiles < puzzle[columns].size(); downTiles++)
+    //             {
+    //                 int downTile = puzzle[columns][downTiles];
+    //                 if (downTile == 0)
+    //                     continue;
+    //                 else if (downTile != (columns * _lineLength) + (downTiles + 1))
+    //                 {
+    //                     if (tile > downTile)
+    //                         linearConflict++;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     return linearConflict;
 }
 
-
 int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle)
 {
-    int manhattanDistance = 0;
 
-    for (auto i = 0; i < puzzle.size(); i++)
+    int distance = 0;
+
+    for (int i = 0; i < puzzle.size(); i++)
     {
-        for (auto j = 0; j < puzzle[i].size(); j++)
+        for (int j = 0; j < puzzle[i].size(); j++)
         {
             int value = puzzle[i][j];
             if (value == 0)
-                continue;
-            int expectedRow = (value - 1) / _lineLength;
-            int expectedColumn = (value - 1) % _lineLength;
-            int distance = abs(i - expectedRow) + abs(j - expectedColumn);
-            manhattanDistance += distance;
+                continue; // Skip the blank space
+
+            auto expectedPos = _snailPositions[value];
+            distance += abs(i - expectedPos.first) + abs(j - expectedPos.second);
         }
     }
-    return manhattanDistance;
+
+    return distance;
 }
 
 std::vector<std::vector<int>> PuzzleSolver::upPuzzle(std::vector<std::vector<int>> puzzle)
