@@ -59,6 +59,7 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
         openList.pop();
         closedList.push_back(currentNode);
         addedNodes.erase(currentNode->puzzle);
+        timeComplexity++;
         if (manhattanDistance(currentNode->puzzle) == 0)
         {
             std::cout << "Solved!" << std::endl;
