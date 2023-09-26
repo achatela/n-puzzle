@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <map>
 #include <queue>
+#include <math.h>
 
 class PuzzleSolver
 {
@@ -44,6 +45,7 @@ public:
     // Solving methods
     int manhattanDistance(std::vector<std::vector<int>> puzzle);
     int linearConflict(std::vector<std::vector<int>> puzzle);
+    int euclidianDistance(std::vector<std::vector<int>> puzzle);
     int uniformCostFakeHeuristic(std::vector<std::vector<int>> puzzle);
     void addNeighbours(Node *currentNode, std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int>>, Node **> &closedList, std::map<std::vector<std::vector<int>>, Node **> &addedNodes, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle));
     std::vector<std::vector<int>> upPuzzle(std::vector<std::vector<int>> puzzle);

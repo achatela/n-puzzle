@@ -49,6 +49,8 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
         heuristic = &PuzzleSolver::linearConflict;
     else if (heuristicInput == "bonus_uniform")
         heuristic = &PuzzleSolver::uniformCostFakeHeuristic;
+    else if (heuristicInput == "euclidian")
+        heuristic = &PuzzleSolver::euclidianDistance;
     else
         throw std::invalid_argument("Invalid heuristic");
 
@@ -867,6 +869,27 @@ void PuzzleSolver::addNeighbours(Node *currentNode, std::priority_queue<Node *, 
         throw std::invalid_argument("Invalid direction");
     }
 }
+
+int PuzzleSolver::euclidianDistance(std::vector<std::vector<int>> puzzle)
+{
+    int distance = 0;
+
+    for (int i = 0; i < puzzle.size(); i++)
+    {
+        for (int j = 0; j < puzzle[i].size(); j++)
+        {
+            int value = puzzle[i][j];
+            if (value == 0)
+                continue; // Skip the blank space
+
+            auto expectedPos = _snailPositions[value];
+            distance += sqrt(pow(i - expectedPos.first, 2) + pow(j - expectedPos.second, 2));
+        }
+    }
+
+    return distance;
+}
+
 
 int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {
