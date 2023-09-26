@@ -895,26 +895,49 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {
     int linearConflict = manhattanDistance(puzzle);
 
-    for (int rows = 0; rows < puzzle.size(); rows++)
+    int total = _lineLength*_lineLength;
+    int size = _lineLength;
+    int column = 0;
+    int row = -1;
+    std::vector<int> tiles;
+    while (1) {
+        while (row + 1 < size)
+            tiles.push_back(puzzle[column][++row]);
+        if (tiles.size() == total)
+            break;
+        while (column + 1 < size)
+            tiles.push_back(puzzle[++column][row]);
+        if (tiles.size() == total)
+            break;
+        while (row - 1 >= _lineLength - size)
+            tiles.push_back(puzzle[column][--row]);
+        if (tiles.size() == total)
+            break;
+        while (column - 1 >= _lineLength - size)
+            tiles.push_back(puzzle[--column][row]);
+        if (tiles.size() == total)
+            break;
+        size--;
+    }
+
+    for (int column = 0; column < _lineLength; column++)
     {
-        for (int row = 0; row < puzzle[rows].size(); row++)
+        for (int row = 0; row < _lineLength; row++)
         {
-            int tile = puzzle[rows][row];
+            int tile = tiles[row + column * _lineLength];
             if (tile == 0)
                 continue;
-            else
-            {
-                for (int otherTiles = 0; otherTiles < puzzle[rows].size(); otherTiles++)
+            else {
+                for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
                 {
                     if (otherTiles == row)
                         continue;
-                    int otherTile = puzzle[rows][otherTiles];
+                    int otherTile = tiles[otherTiles + column * _lineLength];
                     if (otherTile == 0)
                         continue;
                     else
                     {
-                        if ((tile > otherTile && row < otherTiles && tile < row + 1) || 
-                            (tile < otherTile && row > otherTiles && tile > row + 1))
+                        if ((tile > otherTile && row < otherTiles && tile < row + 1) || (tile < otherTile && row > otherTiles && tile > row + 1))
                             linearConflict++;
                     }
                 }
@@ -922,32 +945,31 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
         }
     }
 
-    for (int columns = 0; columns < puzzle.size(); columns++)
+    for (int row = 0; row < _lineLength; row++)
     {
-        for (int column = 0; column < puzzle[columns].size(); column++)
+        for (int column = 0; column < _lineLength; column++)
         {
-            int tile = puzzle[column][columns];
+            int tile = tiles[row + column * _lineLength];
             if (tile == 0)
                 continue;
-            else
-            {
-                for (int otherTiles = 0; otherTiles < puzzle[columns].size(); otherTiles++)
+            else {
+                for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
                 {
                     if (otherTiles == column)
                         continue;
-                    int otherTile = puzzle[otherTiles][columns];
+                    int otherTile = tiles[row + otherTiles * _lineLength];
                     if (otherTile == 0)
                         continue;
                     else
                     {
-                        if ((tile > otherTile && column < otherTiles && tile < column + 1) || 
-                            (tile < otherTile && column > otherTiles && tile > column + 1))
+                        if ((tile > otherTile && column < otherTiles && tile < column + 1) || (tile < otherTile && column > otherTiles && tile > column + 1))
                             linearConflict++;
                     }
                 }
             }
         }
     }
+
     return linearConflict;
 }
 
