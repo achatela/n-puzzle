@@ -208,7 +208,7 @@ std::string PuzzleParser::getFileName() const
     return _fileName;
 }
 
-std::vector<std::vector<int>> PuzzleParser::getPuzzle() const
+std::vector<std::vector<int> > PuzzleParser::getPuzzle() const
 {
     return _puzzle;
 }

@@ -11,7 +11,7 @@ class PuzzleParser
 {
     private:
         std::string _fileName;
-        std::vector<std::vector<int>> _puzzle;
+        std::vector<std::vector<int> > _puzzle;
         int _lineLength;
 
     public:
@@ -28,7 +28,7 @@ class PuzzleParser
         // Getters
         int getLineLength() const;
         std::string getFileName() const;
-        std::vector<std::vector<int>> getPuzzle() const;
+        std::vector<std::vector<int> > getPuzzle() const;
 
         // Setters
         void setLineLength(int lineLength);
