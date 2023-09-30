@@ -3,11 +3,10 @@
 // Constructor and destructor
 void PuzzleSolver::setSnailPuzzle()
 {
-    std::vector<std::vector<int> > snailSolution;
     for (int i = 0; i != _lineLength; i++) {
-        snailSolution.push_back(std::vector<int>());
+        _snailSolution.push_back(std::vector<int>());
         for (int j = 0; j != _lineLength; j++) {
-            snailSolution[i].push_back(0);
+            _snailSolution[i].push_back(0);
         }
     }
 
@@ -21,22 +20,22 @@ void PuzzleSolver::setSnailPuzzle()
         if (i % 4 == 0) {
             size--;
             while (row < size)
-                snailSolution[column][row++] = number++;
+                _snailSolution[column][row++] = number++;
         }
         else if (i % 4 == 1)
             while (column < size)
-                snailSolution[column++][row] = number++;
+                _snailSolution[column++][row] = number++;
         else if (i % 4 == 2)
             while (row >= _lineLength - size)
-                snailSolution[column][row--] = number++;
+                _snailSolution[column][row--] = number++;
         else
             while (column >= _lineLength - size)
-                snailSolution[column--][row] = number++;
+                _snailSolution[column--][row] = number++;
     }
 
     // for (int i = 0; i != _lineLength; i++) {
     //     for (int j = 0; j != _lineLength; j++) {
-    //         std::cout << snailSolution[i][j] << " ";
+    //         std::cout << _snailSolution[i][j] << " ";
     //     }
     //     std::cout << std::endl;
     // }
@@ -92,7 +91,7 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int> > puzzle, int lineLength
         closedList[currentNode->puzzle] = &currentNode;
         addedNodes.erase(currentNode->puzzle);
         timeComplexity++;
-        if (manhattanDistance(currentNode->puzzle) == 0)
+        if (currentNode->cost - currentNode->depth == 0 && currentNode->depth)
         {
             std::cout << "Solved!" << std::endl;
             for (int i = 0; i < currentNode->puzzle.size(); i++)
@@ -999,7 +998,6 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int> > puzzle)
 
 int PuzzleSolver::manhattanDistance(std::vector<std::vector<int> > puzzle)
 {
-
     int distance = 0;
 
     for (int i = 0; i < puzzle.size(); i++)
