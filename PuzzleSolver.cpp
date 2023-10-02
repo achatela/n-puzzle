@@ -161,17 +161,17 @@ void PuzzleSolver::pushNode(char direction, Node *parentNode, int (PuzzleSolver:
     int cost = (this->*heuristic)(puzzle) + parentNode->depth + 1;
     if (closedList.find(puzzle) != closedList.end())
     {
-        Node *closedNode = closedList[puzzle];
-        if (cost < closedNode->cost)
-        {
-            closedNode->direction = direction;
-            closedNode->cost = cost;
-            closedNode->depth = parentNode->depth + 1;
-            closedNode->parent = parentNode;
-        }
+        // Node *closedNode = closedList[puzzle];
+        // if (cost < closedNode->cost)
+        // {
+        //     closedNode->direction = direction;
+        //     closedNode->cost = cost;
+        //     closedNode->depth = parentNode->depth + 1;
+        //     closedNode->parent = parentNode;
+        // }
         return;
     }
-    else if (_openListSet.insert(puzzle).second == true)
+    if (_openListSet.insert(puzzle).second)
     {
         Node *newNode = new Node;
         newNode->direction = direction;
