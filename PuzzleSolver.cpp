@@ -227,22 +227,24 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
     int column = 0;
     int row = -1;
 
-    for (int i = 0; total != 0; i++)
+    for (int i = 0; total != 0; i++) // invalid read
     {
         if (i % 4 == 0)
         {
             size--;
-            for (; row < size; total--)
+            if (row == -1)
+                row = 0;
+            for (; row < size && row < _lineLength; total--)
                 tiles.push_back(puzzle[column][row++]);
         }
         else if (i % 4 == 1)
-            for (; column < size; total--)
+            for (; column < size && column < _lineLength; total--)
                 tiles.push_back(puzzle[column++][row]);
         else if (i % 4 == 2)
-            for (; row >= _lineLength - size; total--)
+            for (; row >= _lineLength - size && row > -1; total--)
                 tiles.push_back(puzzle[column][row--]);
         else
-            for (; column >= _lineLength - size; total--)
+            for (; column >= _lineLength - size && column > -1; total--)
                 tiles.push_back(puzzle[column--][row]);
     }
 
