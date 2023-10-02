@@ -2,12 +2,13 @@
 
 // Constructor and destructor
 
-PuzzleSolver::PuzzleSolver(std::vector<std::vector<int> > puzzle, int lineLength, std::string heuristicInput) : _puzzle(puzzle), _lineLength(lineLength)
+PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength, std::string heuristicInput) : _puzzle(puzzle), _lineLength(lineLength)
 {
     std::priority_queue<Node *, std::vector<Node *>, CompareNode> openList;
-    std::map<std::vector<std::vector<int> >, Node *> closedList;
 
-    int (PuzzleSolver::*heuristic)(std::vector<std::vector<int> > puzzle);
+    std::map<std::vector<std::vector<int>>, Node *> closedList;
+
+    int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle);
     if (heuristicInput == "manhattan")
         heuristic = &PuzzleSolver::manhattanDistance;
     else if (heuristicInput == "linear")
@@ -26,17 +27,20 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int> > puzzle, int lineLength
     _root->depth = 0;
     _root->direction = 'N'; // none
 
-    closedList[puzzle] = _root;
-    
-    Node *currentNode = _root;
+    // closedList[puzzle] = _root;
+    openList.push(_root);
+    Node *currentNode = openList.top();
+    openList.pop();
+    closedList[currentNode->puzzle] = currentNode;
 
     int timeComplexity = 0;
 
     setSnailPuzzle();
 
-    while (currentNode->puzzle != _snailSolution) {
+    while (currentNode->puzzle != _snailSolution)
+    {
         addNeighbours(currentNode, openList, closedList, heuristic);
-        currentNode->puzzle.clear();
+        // currentNode->puzzle.clear();
         currentNode = openList.top();
         openList.pop();
         closedList[currentNode->puzzle] = currentNode;
@@ -66,13 +70,24 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int> > puzzle, int lineLength
     std::cout << "Space complexity: " << openList.size() + closedList.size() << std::endl;
     std::cout << "Number of moves required " << solution.length() << std::endl;
     std::cout << "Solution: " << solution << std::endl;
-    while (!openList.empty()) {
+
+    // std::set<std::vector<std::vector<int>>> checkPuzzle;
+
+    while (!openList.empty())
+    {
         currentNode = openList.top();
+        // if (checkPuzzle.insert(currentNode->puzzle).second == false)
+        //     std::cout << "Duplicate puzzle open" << std::endl;
         openList.pop();
         delete currentNode;
     }
     for (auto it = closedList.begin(); it != closedList.end(); it++)
+    {
+        // if (checkPuzzle.insert(it->second->puzzle).second == false)
+        // std::cout << "Duplicate puzzle closed" << std::endl;
         delete it->second;
+    }
+    // std::cout << "set size" << checkPuzzle.size() << std::endl;
 }
 
 PuzzleSolver::~PuzzleSolver() {}
@@ -85,14 +100,17 @@ void PuzzleSolver::setSnailPuzzle()
     int column = 0;
     int row = 0;
 
-    for (int i = 0; i != _lineLength; i++) {
+    for (int i = 0; i != _lineLength; i++)
+    {
         _snailSolution.push_back(std::vector<int>());
         for (int j = 0; j != _lineLength; j++)
             _snailSolution[i].push_back(0);
     }
 
-    for (int i = 0; number != total; i++) {
-        if (i % 4 == 0) {
+    for (int i = 0; number != total; i++)
+    {
+        if (i % 4 == 0)
+        {
             size--;
             while (row < size)
                 _snailSolution[column][row++] = number++;
@@ -108,13 +126,14 @@ void PuzzleSolver::setSnailPuzzle()
                 _snailSolution[column--][row] = number++;
     }
 
-    for (int i = 0; i < _lineLength; i++) {
+    for (int i = 0; i < _lineLength; i++)
+    {
         for (int j = 0; j < _lineLength; j++)
             _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
     }
 }
 
-void PuzzleSolver::addNeighbours(Node *currentNode, std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int> >, Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int> > puzzle))
+void PuzzleSolver::addNeighbours(Node *currentNode, std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int>>, Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle))
 {
     if (currentNode->direction != 'D')
         pushNode('U', currentNode, heuristic, openList, closedList);
@@ -126,35 +145,39 @@ void PuzzleSolver::addNeighbours(Node *currentNode, std::priority_queue<Node *, 
         pushNode('R', currentNode, heuristic, openList, closedList);
 }
 
-void PuzzleSolver::pushNode(char direction, Node *parentNode, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int> > puzzle), std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int> >, Node *> &closedList)
+void PuzzleSolver::pushNode(char direction, Node *parentNode, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle), std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int>>, Node *> &closedList)
 {
-    std::vector<std::vector<int> > puzzle = makePuzzle(direction, parentNode->puzzle);
+    std::vector<std::vector<int>> puzzle = makePuzzle(direction, parentNode->puzzle);
     if (puzzle.empty())
         return;
     int cost = (this->*heuristic)(puzzle) + parentNode->depth + 1;
-    if (closedList.find(puzzle) != closedList.end()) {
+    if (closedList.find(puzzle) != closedList.end())
+    {
         Node *closedNode = closedList[puzzle];
-        if (cost < closedNode->cost) {
+        if (cost < closedNode->cost)
+        {
             closedNode->direction = direction;
             closedNode->cost = cost;
             closedNode->depth = parentNode->depth;
             closedNode->parent = parentNode;
         }
-        else
-            return;
+        return;
     }
-    Node *newNode = new Node;
-    newNode->direction = direction;
-    newNode->puzzle = puzzle;
-    newNode->cost = cost;
-    newNode->depth = parentNode->depth + 1;
-    newNode->parent = parentNode;
-    openList.push(newNode);
+    else if (_openListSet.insert(puzzle).second == true)
+    {
+        Node *newNode = new Node;
+        newNode->direction = direction;
+        newNode->puzzle = puzzle;
+        newNode->cost = cost;
+        newNode->depth = parentNode->depth + 1;
+        newNode->parent = parentNode;
+        openList.push(newNode);
+    }
 }
 
 // Solving methods
 
-int PuzzleSolver::manhattanDistance(std::vector<std::vector<int> > puzzle)
+int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle)
 {
     int distance = 0;
 
@@ -174,7 +197,7 @@ int PuzzleSolver::manhattanDistance(std::vector<std::vector<int> > puzzle)
     return distance;
 }
 
-int PuzzleSolver::euclidianDistance(std::vector<std::vector<int> > puzzle)
+int PuzzleSolver::euclidianDistance(std::vector<std::vector<int>> puzzle)
 {
     int distance = 0;
 
@@ -194,7 +217,7 @@ int PuzzleSolver::euclidianDistance(std::vector<std::vector<int> > puzzle)
     return distance;
 }
 
-int PuzzleSolver::linearConflict(std::vector<std::vector<int> > puzzle)
+int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {
     int linearConflict = manhattanDistance(puzzle);
 
@@ -204,20 +227,22 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int> > puzzle)
     int column = 0;
     int row = -1;
 
-    for (int i = 0; total != 0; i++) {
-        if (i % 4 == 0) {
+    for (int i = 0; total != 0; i++)
+    {
+        if (i % 4 == 0)
+        {
             size--;
-            for (;row < size; total--)
+            for (; row < size; total--)
                 tiles.push_back(puzzle[column][row++]);
         }
         else if (i % 4 == 1)
-            for (;column < size; total--)
+            for (; column < size; total--)
                 tiles.push_back(puzzle[column++][row]);
         else if (i % 4 == 2)
-            for (;row >= _lineLength - size; total--)
+            for (; row >= _lineLength - size; total--)
                 tiles.push_back(puzzle[column][row--]);
         else
-            for (;column >= _lineLength - size; total--)
+            for (; column >= _lineLength - size; total--)
                 tiles.push_back(puzzle[column--][row]);
     }
 
@@ -228,7 +253,8 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int> > puzzle)
             int tile = tiles[row + column * _lineLength];
             if (tile == 0)
                 continue;
-            else {
+            else
+            {
                 for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
                 {
                     if (otherTiles == row)
@@ -253,7 +279,8 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int> > puzzle)
             int tile = tiles[row + column * _lineLength];
             if (tile == 0)
                 continue;
-            else {
+            else
+            {
                 for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
                 {
                     if (otherTiles == column)
@@ -274,12 +301,12 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int> > puzzle)
     return linearConflict;
 }
 
-int PuzzleSolver::uniformCostFakeHeuristic(std::vector<std::vector<int> > puzzle)
+int PuzzleSolver::uniformCostFakeHeuristic(std::vector<std::vector<int>> puzzle)
 {
     return 0;
 }
 
-std::vector<std::vector<int> > PuzzleSolver::makePuzzle(char direction, std::vector<std::vector<int> > puzzle)
+std::vector<std::vector<int>> PuzzleSolver::makePuzzle(char direction, std::vector<std::vector<int>> puzzle)
 {
     for (int i = 0; i < _lineLength; i++)
     {
@@ -287,36 +314,40 @@ std::vector<std::vector<int> > PuzzleSolver::makePuzzle(char direction, std::vec
         {
             if (puzzle[i][j] == 0)
             {
-                if (direction == 'U') {
+                if (direction == 'U')
+                {
                     if (i == 0)
-                        return std::vector<std::vector<int> >();
+                        return std::vector<std::vector<int>>();
                     else
                     {
                         puzzle[i][j] = puzzle[i - 1][j];
                         puzzle[i - 1][j] = 0;
                     }
                 }
-                else if (direction == 'D') {
+                else if (direction == 'D')
+                {
                     if (i == _lineLength - 1)
-                        return std::vector<std::vector<int> >();
+                        return std::vector<std::vector<int>>();
                     else
                     {
                         puzzle[i][j] = puzzle[i + 1][j];
                         puzzle[i + 1][j] = 0;
                     }
                 }
-                else if (direction == 'L') {
+                else if (direction == 'L')
+                {
                     if (j == 0)
-                        return std::vector<std::vector<int> >();
+                        return std::vector<std::vector<int>>();
                     else
                     {
                         puzzle[i][j] = puzzle[i][j - 1];
                         puzzle[i][j - 1] = 0;
                     }
                 }
-                else {
+                else
+                {
                     if (j == _lineLength - 1)
-                        return std::vector<std::vector<int> >();
+                        return std::vector<std::vector<int>>();
                     else
                     {
                         puzzle[i][j] = puzzle[i][j + 1];
@@ -327,7 +358,7 @@ std::vector<std::vector<int> > PuzzleSolver::makePuzzle(char direction, std::vec
             }
         }
     }
-    return std::vector<std::vector<int> >();
+    return std::vector<std::vector<int>>();
 }
 
 // Getters
@@ -337,7 +368,7 @@ int PuzzleSolver::getLineLength() const
     return _lineLength;
 }
 
-std::vector<std::vector<int> > PuzzleSolver::getPuzzle() const
+std::vector<std::vector<int>> PuzzleSolver::getPuzzle() const
 {
     return _puzzle;
 }

@@ -7,6 +7,7 @@
 #include <map>
 #include <queue>
 #include <math.h>
+#include <set>
 
 class PuzzleSolver
 {
@@ -14,7 +15,7 @@ class PuzzleSolver
     struct Node
     {
         char direction; // 'U', 'D', 'L', 'R'
-        std::vector<std::vector<int> > puzzle;
+        std::vector<std::vector<int>> puzzle;
         Node *parent;
 
         typedef int value_type;
@@ -31,30 +32,31 @@ class PuzzleSolver
     };
 
 private:
-    std::vector<std::vector<int> > _puzzle;
-    std::vector<std::vector<int> > _snailSolution;
-    std::map<int, std::pair<int, int> > _snailPositions;
+    std::vector<std::vector<int>> _puzzle;
+    std::vector<std::vector<int>> _snailSolution;
+    std::map<int, std::pair<int, int>> _snailPositions;
+    std::set<std::vector<std::vector<int>>> _openListSet;
     int _lineLength;
     Node *_root;
 
 public:
     // Constructor and destructor
-    PuzzleSolver(std::vector<std::vector<int> > puzzle, int lineLength, std::string heuristicInput);
+    PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength, std::string heuristicInput);
     ~PuzzleSolver();
 
     // Solving methods
-    std::vector<std::vector<int> > getSnailSolution();
-    void addNeighbours(Node *currentNode, std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int> >, Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int> > puzzle));
-    void pushNode(char direction, Node *parentNode, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int> > puzzle), std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int> >, Node *> &closedList);
-    std::vector<std::vector<int> > makePuzzle(char direction, std::vector<std::vector<int> > puzzle);
-    int manhattanDistance(std::vector<std::vector<int> > puzzle);
-    int euclidianDistance(std::vector<std::vector<int> > puzzle);
-    int linearConflict(std::vector<std::vector<int> > puzzle);
-    int uniformCostFakeHeuristic(std::vector<std::vector<int> > puzzle);
+    std::vector<std::vector<int>> getSnailSolution();
+    void addNeighbours(Node *currentNode, std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int>>, Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle));
+    void pushNode(char direction, Node *parentNode, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle), std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int>>, Node *> &closedList);
+    std::vector<std::vector<int>> makePuzzle(char direction, std::vector<std::vector<int>> puzzle);
+    int manhattanDistance(std::vector<std::vector<int>> puzzle);
+    int euclidianDistance(std::vector<std::vector<int>> puzzle);
+    int linearConflict(std::vector<std::vector<int>> puzzle);
+    int uniformCostFakeHeuristic(std::vector<std::vector<int>> puzzle);
 
     // Getters
     int getLineLength() const;
-    std::vector<std::vector<int> > getPuzzle() const;
+    std::vector<std::vector<int>> getPuzzle() const;
 
     // Setters
     void setSnailPuzzle();
