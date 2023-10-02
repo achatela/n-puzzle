@@ -64,7 +64,7 @@ int main(int argc, char **argv)
             std::cout << parser.getFileName() << std::endl;
             std::cout << parser.getLineLength() << std::endl;
 
-            std::vector<std::vector<int> > puzzle = parser.getPuzzle();
+            std::vector<std::vector<int>> puzzle = parser.getPuzzle();
             std::cout << std::endl;
             for (int i = 0; i < puzzle.size(); i++)
             {
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
                 std::cout << std::endl;
             }
 
-            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength(), std::string("manhattan"));
+            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength(), std::string("manhattan"), std::string("a*"));
         }
         else
         {
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
             std::cout << parser.getFileName() << std::endl;
             std::cout << parser.getLineLength() << std::endl;
 
-            std::vector<std::vector<int> > puzzle = parser.getPuzzle();
+            std::vector<std::vector<int>> puzzle = parser.getPuzzle();
             std::cout << std::endl;
             for (int i = 0; i < puzzle.size(); i++)
             {
@@ -100,8 +100,13 @@ int main(int argc, char **argv)
                 }
                 std::cout << std::endl;
             }
+            std::string algorithm;
+            if (argc == 4)
+                algorithm = std::string(argv[3]);
+            else
+                algorithm = std::string("a*");
 
-            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength(), std::string(argv[2]));
+            PuzzleSolver solver(parser.getPuzzle(), parser.getLineLength(), std::string(argv[2]), algorithm);
         }
     }
     catch (const std::exception &e)

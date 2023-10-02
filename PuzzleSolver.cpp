@@ -2,8 +2,16 @@
 
 // Constructor and destructor
 
-PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength, std::string heuristicInput) : _puzzle(puzzle), _lineLength(lineLength)
+PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength, std::string heuristicInput, std::string algorithmInput) : _puzzle(puzzle), _lineLength(lineLength)
 {
+    // bool (PuzzleSolver::*compare)(Node *const &n1, Node *const &n2);
+    // if (algorithmInput == "a*")
+    //     compare = &PuzzleSolver::CompareNode::operator;
+    // else if (algorithmInput == "greedy")
+    //     compare = &PuzzleSolver::CompareNodeGreedy::operator;
+    // else
+    // throw std::invalid_argument("Invalid algorithm");
+
     std::priority_queue<Node *, std::vector<Node *>, CompareNode> openList;
 
     std::map<std::vector<std::vector<int>>, Node *> closedList;
