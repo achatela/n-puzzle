@@ -166,7 +166,7 @@ void PuzzleSolver::pushNode(char direction, Node *parentNode, int (PuzzleSolver:
         {
             closedNode->direction = direction;
             closedNode->cost = cost;
-            closedNode->depth = parentNode->depth;
+            closedNode->depth = parentNode->depth + 1;
             closedNode->parent = parentNode;
         }
         return;
