@@ -66,9 +66,9 @@ int main(int argc, char **argv)
 
             std::vector<std::vector<int>> puzzle = parser.getPuzzle();
             std::cout << std::endl;
-            for (int i = 0; i < puzzle.size(); i++)
+            for (unsigned long i = 0; i < puzzle.size(); i++)
             {
-                for (int j = 0; j < puzzle[i].size(); j++)
+                for (unsigned long j = 0; j < puzzle[i].size(); j++)
                 {
                     if (j == puzzle[i].size() - 1)
                         std::cout << puzzle[i][j];
@@ -89,9 +89,9 @@ int main(int argc, char **argv)
 
             std::vector<std::vector<int>> puzzle = parser.getPuzzle();
             std::cout << std::endl;
-            for (int i = 0; i < puzzle.size(); i++)
+            for (unsigned long i = 0; i < puzzle.size(); i++)
             {
-                for (int j = 0; j < puzzle[i].size(); j++)
+                for (unsigned long j = 0; j < puzzle[i].size(); j++)
                 {
                     if (j == puzzle[i].size() - 1)
                         std::cout << puzzle[i][j];

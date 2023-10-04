@@ -312,6 +312,7 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 
 int PuzzleSolver::uniformCostFakeHeuristic(std::vector<std::vector<int>> puzzle)
 {
+    (void)puzzle;
     return 0;
 }
 
