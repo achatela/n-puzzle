@@ -101,63 +101,59 @@ PuzzleSolver::~PuzzleSolver() {}
 void PuzzleSolver::setSnailPuzzle()
 {
 
-    if (_lineLength == 3)
-    {
-        _snailSolution = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
-    }
-    else if (_lineLength == 4)
-    {
-        _snailSolution = {{1, 2, 3, 4}, {12, 13, 14, 5}, {11, 0, 15, 6}, {10, 9, 8, 7}};
-    }
-    else if (_lineLength == 5)
-    {
-        _snailSolution = {{1, 2, 3, 4, 5}, {16, 17, 18, 19, 6}, {15, 24, 0, 20, 7}, {14, 23, 22, 21, 8}, {13, 12, 11, 10, 9}};
-    }
-    for (unsigned long i = 0; i < _snailSolution.size(); i++)
-    {
-        for (unsigned long j = 0; j < _snailSolution[i].size(); j++)
-        {
-            _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
-        }
-    }
-    // int total = _lineLength * _lineLength;
-    // int size = _lineLength;
-    // int number = 1;
-    // int column = 0;
-    // int row = 0;
-
-    // for (int i = 0; i != _lineLength; i++)
+    // if (_lineLength == 3)
     // {
-    //     _snailSolution.push_back(std::vector<int>());
-    //     for (int j = 0; j != _lineLength; j++)
-    //         _snailSolution[i].push_back(0);
+    //     _snailSolution = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
     // }
-
-    // for (int i = 0; number != total; i++)
+    // else if (_lineLength == 4)
     // {
-    //     std::cout << "stuck" << std::endl;
-    //     if (i % 4 == 0)
+    //     _snailSolution = {{1, 2, 3, 4}, {12, 13, 14, 5}, {11, 0, 15, 6}, {10, 9, 8, 7}};
+    // }
+    // else if (_lineLength == 5)
+    // {
+    //     _snailSolution = {{1, 2, 3, 4, 5}, {16, 17, 18, 19, 6}, {15, 24, 0, 20, 7}, {14, 23, 22, 21, 8}, {13, 12, 11, 10, 9}};
+    // }
+    // for (unsigned long i = 0; i < _snailSolution.size(); i++)
+    // {
+    //     for (unsigned long j = 0; j < _snailSolution[i].size(); j++)
     //     {
-    //         size--;
-    //         while (row < size)
-    //             _snailSolution[column][row++] = number++;
-    //     }
-    //     else if (i % 4 == 1)
-    //         while (column < size)
-    //             _snailSolution[column++][row] = number++;
-    //     else if (i % 4 == 2)
-    //         while (row >= _lineLength - size)
-    //             _snailSolution[column][row--] = number++;
-    //     else
-    //         while (column >= _lineLength - size)
-    //             _snailSolution[column--][row] = number++;
-    // }
-
-    // for (int i = 0; i < _lineLength; i++)
-    // {
-    //     for (int j = 0; j < _lineLength; j++)
     //         _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
+    //     }
     // }
+    int total = _lineLength * _lineLength;
+    int size = _lineLength;
+    int number = 1;
+    int column = 0;
+    int row = -1;
+
+    for (int i = 0; i != _lineLength; i++)
+    {
+        _snailSolution.push_back(std::vector<int>());
+        for (int j = 0; j != _lineLength; j++)
+            _snailSolution[i].push_back(0);
+    }
+
+    for (int i = 0; number != total; i++)
+    {
+        if (i % 4 == 0)
+            while (row + 1 < size)
+                _snailSolution[column][++row] = number++;
+        else if (i % 4 == 1)
+            while (column + 1 < size)
+                _snailSolution[++column][row] = number++;
+        else if (i % 4 == 2)
+            while (row - 1 >= _lineLength - size)
+                _snailSolution[column][--row] = number++;
+        else
+            for (size--; column - 1 >= _lineLength - size;)
+                _snailSolution[--column][row] = number++;
+    }
+
+    for (int i = 0; i < _lineLength; i++)
+    {
+        for (int j = 0; j < _lineLength; j++)
+            _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
+    }
 
     // std::cout << "Snail solution look like:" << std::endl;
     // for (int i = 0; i < _lineLength; i++)
@@ -270,22 +266,17 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
     for (int i = 0; total != 0; i++)
     {
         if (i % 4 == 0)
-        {
-            size--;
-            if (row == -1)
-                row = 0;
-            for (; row < size && row < _lineLength; total--)
-                tiles.push_back(puzzle[column][row++]);
-        }
+            for (; row + 1 < size; total--)
+                tiles.push_back(puzzle[column][++row]);
         else if (i % 4 == 1)
-            for (; column < size && column < _lineLength; total--)
-                tiles.push_back(puzzle[column++][row]);
+            for (; column + 1 < size; total--)
+                tiles.push_back(puzzle[++column][row]);
         else if (i % 4 == 2)
-            for (; row >= _lineLength - size && row > -1; total--)
-                tiles.push_back(puzzle[column][row--]);
+            for (; row - 1 >= _lineLength - size; total--)
+                tiles.push_back(puzzle[column][--row]);
         else
-            for (; column >= _lineLength - size && column > -1; total--)
-                tiles.push_back(puzzle[column--][row]);
+            for (size--; column - 1 >= _lineLength - size; total--)
+                tiles.push_back(puzzle[--column][row]);
     }
 
     for (int column = 0; column < _lineLength; column++)

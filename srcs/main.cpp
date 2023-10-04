@@ -66,11 +66,11 @@ int main(int argc, char **argv)
 
             std::vector<std::vector<int>> puzzle = parser.getPuzzle();
             std::cout << std::endl;
-            for (unsigned long i = 0; i < puzzle.size(); i++)
+            for (unsigned int i = 0; i < puzzle.size(); i++)
             {
-                for (unsigned long j = 0; j < puzzle[i].size(); j++)
+                for (unsigned int j = 0; j < puzzle.size(); j++)
                 {
-                    if (j == puzzle[i].size() - 1)
+                    if (j == puzzle.size() - 1)
                         std::cout << puzzle[i][j];
                     else
                         std::cout << puzzle[i][j] << " ";

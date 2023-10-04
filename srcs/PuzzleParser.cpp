@@ -188,11 +188,11 @@ void PuzzleParser::parse()
         else
         {
             unsigned long oldLength = tokens.size();
-            std::istringstream iss(line);
             std::string token;
-
+            std::istringstream iss(line);
             while (std::getline(iss, token, delimiter))
-                tokens.push_back(token);
+                if (!token.empty())
+                    tokens.push_back(token);
             if ((int)(tokens.size() - oldLength) != _lineLength)
                 throw std::invalid_argument("Line " + std::to_string(lineCount) + " does not have " + std::to_string(_lineLength) + " number(s)");
         }
