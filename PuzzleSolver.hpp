@@ -11,7 +11,6 @@
 
 class PuzzleSolver
 {
-
     struct Node
     {
         char direction; // 'U', 'D', 'L', 'R'
@@ -25,17 +24,21 @@ class PuzzleSolver
 
     struct CompareNode
     {
-        bool operator()(Node *const &n1, Node *const &n2)
-        {
-            return n1->cost > n2->cost;
-        }
-    };
 
-    struct CompareNodeGreedy
-    {
+        int field;
+
+        CompareNode(int field = 0) : field(field) {}
+
         bool operator()(Node *const &n1, Node *const &n2)
         {
-            return (n1->cost - n1->depth) < (n2->cost - n2->depth);
+            switch (field)
+            {
+            case 0:
+                return n1->cost > n2->cost;
+            case 1:
+                return (n1->cost - n1->depth - 1) < (n2->cost - n2->depth - 1);
+            }
+            return (0);
         }
     };
 
