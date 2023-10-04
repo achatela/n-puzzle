@@ -19,8 +19,8 @@ bool PuzzleParser::parseLineLength(std::string lineFile)
         while (isdigit(lineFile[j]))
             j++;
         int foundNumber = std::stoi(lineFile.substr(i, j));
-        if (foundNumber < 1 || foundNumber > 5)
-            throw std::invalid_argument("First line is not a number between 1 and 5");
+        if (foundNumber < 3 || foundNumber > 5)
+            throw std::invalid_argument("First line is not a number between 3 and 5");
         else
             setLineLength(foundNumber);
         while (lineFile[j] != '\n' && isspace(lineFile[j]))
