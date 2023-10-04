@@ -49,8 +49,9 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
 
     int timeComplexity = 0;
 
+    std::cout << "In of setSnailPuzzle" << std::endl;
     setSnailPuzzle();
-
+    std::cout << "Out of setSnailPuzzle" << std::endl;
     while (currentNode->puzzle != _snailSolution)
     {
         addNeighbours(currentNode, openList, closedList, heuristic);
@@ -101,43 +102,77 @@ PuzzleSolver::~PuzzleSolver() {}
 
 void PuzzleSolver::setSnailPuzzle()
 {
-    int total = _lineLength * _lineLength;
-    int size = _lineLength;
-    int number = 1;
-    int column = 0;
-    int row = 0;
 
-    for (int i = 0; i != _lineLength; i++)
+    if (_lineLength == 3)
     {
-        _snailSolution.push_back(std::vector<int>());
-        for (int j = 0; j != _lineLength; j++)
-            _snailSolution[i].push_back(0);
+        _snailSolution = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
     }
-
-    for (int i = 0; number != total; i++)
+    else if (_lineLength == 4)
     {
-        if (i % 4 == 0)
+        _snailSolution = {{1, 2, 3, 4}, {12, 13, 14, 5}, {11, 0, 15, 6}, {10, 9, 8, 7}};
+    }
+    else if (_lineLength == 5)
+    {
+        _snailSolution = {{1, 2, 3, 4, 5}, {16, 17, 18, 19, 6}, {15, 24, 0, 20, 7}, {14, 23, 22, 21, 8}, {13, 12, 11, 10, 9}};
+    }
+    for (unsigned long i = 0; i < _snailSolution.size(); i++)
+    {
+        for (unsigned long j = 0; j < _snailSolution[i].size(); j++)
         {
-            size--;
-            while (row < size)
-                _snailSolution[column][row++] = number++;
-        }
-        else if (i % 4 == 1)
-            while (column < size)
-                _snailSolution[column++][row] = number++;
-        else if (i % 4 == 2)
-            while (row >= _lineLength - size)
-                _snailSolution[column][row--] = number++;
-        else
-            while (column >= _lineLength - size)
-                _snailSolution[column--][row] = number++;
-    }
-
-    for (int i = 0; i < _lineLength; i++)
-    {
-        for (int j = 0; j < _lineLength; j++)
             _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
+        }
     }
+    // int total = _lineLength * _lineLength;
+    // int size = _lineLength;
+    // int number = 1;
+    // int column = 0;
+    // int row = 0;
+
+    // for (int i = 0; i != _lineLength; i++)
+    // {
+    //     _snailSolution.push_back(std::vector<int>());
+    //     for (int j = 0; j != _lineLength; j++)
+    //         _snailSolution[i].push_back(0);
+    // }
+
+    // for (int i = 0; number != total; i++)
+    // {
+    //     std::cout << "stuck" << std::endl;
+    //     if (i % 4 == 0)
+    //     {
+    //         size--;
+    //         while (row < size)
+    //             _snailSolution[column][row++] = number++;
+    //     }
+    //     else if (i % 4 == 1)
+    //         while (column < size)
+    //             _snailSolution[column++][row] = number++;
+    //     else if (i % 4 == 2)
+    //         while (row >= _lineLength - size)
+    //             _snailSolution[column][row--] = number++;
+    //     else
+    //         while (column >= _lineLength - size)
+    //             _snailSolution[column--][row] = number++;
+    // }
+
+    // for (int i = 0; i < _lineLength; i++)
+    // {
+    //     for (int j = 0; j < _lineLength; j++)
+    //         _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
+    // }
+
+    // std::cout << "Snail solution look like:" << std::endl;
+    // for (int i = 0; i < _lineLength; i++)
+    // {
+    //     for (int j = 0; j < _lineLength; j++)
+    //     {
+    //         if (j == _lineLength - 1)
+    //             std::cout << _snailSolution[i][j];
+    //         else
+    //             std::cout << _snailSolution[i][j] << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 }
 
 void PuzzleSolver::addNeighbours(Node *currentNode, std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int>>, Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle))

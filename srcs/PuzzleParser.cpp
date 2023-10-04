@@ -110,35 +110,50 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens)
             }
         }
     }
-    if (!(this->_lineLength % 2 == 1 && inversions % 2 == 1))
-    {
-        throw std::invalid_argument("Puzzle is not solvable");
-    }
 
-    // check if puzzle is solvable (even lineLength)
-    if (this->_lineLength % 2 == 0)
+    if (_lineLength == 3)
     {
-        int rowOfZero = 0;
-        for (int i = 0; i < this->_lineLength; i++)
-        {
-            for (int j = 0; j < this->_lineLength; j++)
-            {
-                if (this->_puzzle[i][j] == 0)
-                {
-                    rowOfZero = i;
-                    break;
-                }
-            }
-        }
-        if (!(rowOfZero % 2 == 1 && inversions % 2 == 0))
-        {
-            throw std::invalid_argument("Puzzle is not solvable");
-        }
-        else if (!(rowOfZero % 2 == 0 && inversions % 2 == 1))
+        if (inversions % 2 == 1)
         {
             throw std::invalid_argument("Puzzle is not solvable");
         }
     }
+    else
+    {
+        if (inversions % 2 == 0)
+        {
+            throw std::invalid_argument("Puzzle is not solvable");
+        }
+    }
+    // if (!(this->_lineLength % 2 == 1 && inversions % 2 == 1))
+    // {
+    //     throw std::invalid_argument("Puzzle is not solvable");
+    // }
+
+    // // check if puzzle is solvable (even lineLength)
+    // if (this->_lineLength % 2 == 0)
+    // {
+    //     int rowOfZero = 0;
+    //     for (int i = 0; i < this->_lineLength; i++)
+    //     {
+    //         for (int j = 0; j < this->_lineLength; j++)
+    //         {
+    //             if (this->_puzzle[i][j] == 0)
+    //             {
+    //                 rowOfZero = i;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     if (!(rowOfZero % 2 == 1 && inversions % 2 == 0))
+    //     {
+    //         throw std::invalid_argument("Puzzle is not solvable");
+    //     }
+    //     else if (!(rowOfZero % 2 == 0 && inversions % 2 == 1))
+    //     {
+    //         throw std::invalid_argument("Puzzle is not solvable");
+    //     }
+    // }
 
     std::cout << "Puzzle is solvable" << std::endl;
 }
