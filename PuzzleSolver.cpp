@@ -85,23 +85,16 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
     std::cout << "Number of moves required " << solution.length() << std::endl;
     std::cout << "Solution: " << solution << std::endl;
 
-    // std::set<std::vector<std::vector<int>>> checkPuzzle;
-
     while (!openList.empty())
     {
         currentNode = openList.top();
-        // if (checkPuzzle.insert(currentNode->puzzle).second == false)
-        //     std::cout << "Duplicate puzzle open" << std::endl;
         openList.pop();
         delete currentNode;
     }
     for (auto it = closedList.begin(); it != closedList.end(); it++)
     {
-        // if (checkPuzzle.insert(it->second->puzzle).second == false)
-        // std::cout << "Duplicate puzzle closed" << std::endl;
         delete it->second;
     }
-    // std::cout << "set size" << checkPuzzle.size() << std::endl;
 }
 
 PuzzleSolver::~PuzzleSolver() {}
@@ -201,7 +194,7 @@ int PuzzleSolver::manhattanDistance(std::vector<std::vector<int>> puzzle)
         {
             int value = puzzle[i][j];
             if (value == 0)
-                continue; // Skip the blank space
+                continue;
 
             auto expectedPos = _snailPositions[value];
             distance += abs(i - expectedPos.first) + abs(j - expectedPos.second);
@@ -221,7 +214,7 @@ int PuzzleSolver::euclidianDistance(std::vector<std::vector<int>> puzzle)
         {
             int value = puzzle[i][j];
             if (value == 0)
-                continue; // Skip the blank space
+                continue;
 
             auto expectedPos = _snailPositions[value];
             distance += sqrt(pow(i - expectedPos.first, 2) + pow(j - expectedPos.second, 2));
@@ -241,7 +234,7 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
     int column = 0;
     int row = -1;
 
-    for (int i = 0; total != 0; i++) // invalid read
+    for (int i = 0; total != 0; i++)
     {
         if (i % 4 == 0)
         {
