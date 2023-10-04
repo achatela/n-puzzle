@@ -19,8 +19,8 @@ bool PuzzleParser::parseLineLength(std::string lineFile)
         while (isdigit(lineFile[j]))
             j++;
         int foundNumber = std::stoi(lineFile.substr(i, j));
-        if (foundNumber < 1 || foundNumber > 25)
-            throw std::invalid_argument("First line is not a number between 1 and 255");
+        if (foundNumber < 1 || foundNumber > 5)
+            throw std::invalid_argument("First line is not a number between 1 and 5");
         else
             setLineLength(foundNumber);
         while (lineFile[j] != '\n' && isspace(lineFile[j]))
@@ -111,19 +111,9 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens)
         }
     }
 
-    if (_lineLength == 3)
+    if (inversions % 2 == 0)
     {
-        if (inversions % 2 == 1)
-        {
-            throw std::invalid_argument("Puzzle is not solvable");
-        }
-    }
-    else
-    {
-        if (inversions % 2 == 0)
-        {
-            throw std::invalid_argument("Puzzle is not solvable");
-        }
+        throw std::invalid_argument("Puzzle is not solvable");
     }
     // if (!(this->_lineLength % 2 == 1 && inversions % 2 == 1))
     // {

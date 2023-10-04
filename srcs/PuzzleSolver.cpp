@@ -49,9 +49,7 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
 
     int timeComplexity = 0;
 
-    std::cout << "In of setSnailPuzzle" << std::endl;
     setSnailPuzzle();
-    std::cout << "Out of setSnailPuzzle" << std::endl;
     while (currentNode->puzzle != _snailSolution)
     {
         addNeighbours(currentNode, openList, closedList, heuristic);
