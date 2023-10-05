@@ -257,94 +257,76 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {
     int linearConflict = manhattanDistance(puzzle);
 
-    std::vector<int> tiles;
-    int total = _lineLength * _lineLength;
-    int size = _lineLength;
-    int y = 0;
-    int x = -1;
+    // std::vector<int> tiles;
+    // int total = _lineLength * _lineLength;
+    // int size = _lineLength;
+    // int y = 0;
+    // int x = -1;
 
-    for (int i = 0; total != 0; i++)
-    {
-        if (i % 4 == 0)
-            for (; x + 1 < size; total--)
-                tiles.push_back(puzzle[y][++x]);
-        else if (i % 4 == 1)
-            for (; y + 1 < size; total--)
-                tiles.push_back(puzzle[++y][x]);
-        else if (i % 4 == 2)
-            for (; x - 1 >= _lineLength - size; total--)
-                tiles.push_back(puzzle[y][--x]);
-        else
-            for (size--; y - 1 >= _lineLength - size; total--)
-                tiles.push_back(puzzle[--y][x]);
-    }
+    // for (int i = 0; total != 0; i++)
+    // {
+    //     if (i % 4 == 0)
+    //         for (; x + 1 < size; total--)
+    //             tiles.push_back(puzzle[y][++x]);
+    //     else if (i % 4 == 1)
+    //         for (; y + 1 < size; total--)
+    //             tiles.push_back(puzzle[++y][x]);
+    //     else if (i % 4 == 2)
+    //         for (; x - 1 >= _lineLength - size; total--)
+    //             tiles.push_back(puzzle[y][--x]);
+    //     else
+    //         for (size--; y - 1 >= _lineLength - size; total--)
+    //             tiles.push_back(puzzle[--y][x]);
+    // }
 
-    for (int y = 0; y < _lineLength; y++)
-    {
-        for (int x = 0; x < _lineLength; x++)
-        {
-            int tile = tiles[x + y * _lineLength];
+    std::set<int> conflicts;
+
+    for (int y = 0; y < _lineLength; y++) {
+        for (int x = 0; x < _lineLength; x++) {
+            int tile = puzzle[y][x];
             if (tile == 0)
                 continue;
-            else
-            {
-                for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
-                {
-                    if (otherTiles == x)
-                        continue;
-                    int otherTile = tiles[otherTiles + y * _lineLength];
-                    if (otherTile == 0)
-                        continue;
-                    std::pair<int, int> expectedPos = _snailPositions[tile];
-                    std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
-                    if (expectedPos.first == otherExpectedPos.first)
-                    {
-                        if (!(x > otherTiles && otherExpectedPos.second < expectedPos.second))
-                        {
-                            linearConflict += 2;
-                        }
-                        if (!(x < otherTiles && otherExpectedPos.second > expectedPos.second))
-                        {
-                            linearConflict += 2;
-                        }
-                    }
-                }
+            std::pair<int, int> expectedPos = _snailPositions[tile];
+            if (y != expectedPos.first)
+                continue;
+            for (int x2 = 0; x2 < _lineLength; x2++) {
+                if (x2 == x)
+                    continue;
+                int otherTile = puzzle[y][x2];
+                if (otherTile == 0)
+                    continue;
+                std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
+                if (otherExpectedPos.first != y || (otherExpectedPos.second <= expectedPos.second && x2 <= x) || (otherExpectedPos.second >= expectedPos.second && x2 >= x))
+                    continue;
+                conflicts.insert(otherTile);
             }
         }
+        linearConflict += conflicts.size();
+        conflicts.clear();
     }
 
-    for (int x = 0; x < _lineLength; x++)
-    {
-        for (int y = 0; y < _lineLength; y++)
-        {
-            int tile = tiles[x + y * _lineLength];
+    for (int x = 0; x < _lineLength; x++) {
+        for (int y = 0; y < _lineLength; y++) {
+            int tile = puzzle[y][x];
             if (tile == 0)
                 continue;
-            else
-            {
-                for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
-                {
-                    if (otherTiles == y)
-                        continue;
-                    int otherTile = tiles[x + otherTiles * _lineLength];
-                    if (otherTile == 0)
-                        continue;
-                    std::pair<int, int> expectedPos = _snailPositions[tile];
-                    std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
-                    if (expectedPos.second == otherExpectedPos.second)
-                    {
-                        if (!(y > otherTiles && otherExpectedPos.first < expectedPos.first))
-                        {
-                            linearConflict += 2;
-                        }
-                        if (!(y < otherTiles && otherExpectedPos.first > expectedPos.first))
-                        {
-                            linearConflict += 2;
-                        }
-                    }
-                }
+            std::pair<int, int> expectedPos = _snailPositions[tile];
+            if (x != expectedPos.second)
+                continue;
+            for (int y2 = 0; y2 < _lineLength; y2++) {
+                if (y2 == y)
+                    continue;
+                int otherTile = puzzle[y2][x];
+                if (otherTile == 0)
+                    continue;
+                std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
+                if (otherExpectedPos.second != x || (otherExpectedPos.first <= expectedPos.first && y2 <= y) || (otherExpectedPos.first >= expectedPos.first && y2 >= y))
+                    continue;
+                conflicts.insert(otherTile);
             }
         }
+        linearConflict += conflicts.size();
+        conflicts.clear();
     }
 
     return linearConflict;

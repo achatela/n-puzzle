@@ -133,8 +133,8 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens)
     }
 
     std::cout << "inversions = " << inversions << std::endl;
-    // if (inversions % 2)
-    //     throw std::invalid_argument("Puzzle is not solvable");
+    if (inversions % 2)
+        throw std::invalid_argument("Puzzle is not solvable");
 
     std::cout << "Puzzle is solvable" << std::endl;
 }
