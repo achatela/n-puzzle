@@ -260,71 +260,87 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
     std::vector<int> tiles;
     int total = _lineLength * _lineLength;
     int size = _lineLength;
-    int column = 0;
-    int row = -1;
+    int y = 0;
+    int x = -1;
 
     for (int i = 0; total != 0; i++)
     {
         if (i % 4 == 0)
-            for (; row + 1 < size; total--)
-                tiles.push_back(puzzle[column][++row]);
+            for (; x + 1 < size; total--)
+                tiles.push_back(puzzle[y][++x]);
         else if (i % 4 == 1)
-            for (; column + 1 < size; total--)
-                tiles.push_back(puzzle[++column][row]);
+            for (; y + 1 < size; total--)
+                tiles.push_back(puzzle[++y][x]);
         else if (i % 4 == 2)
-            for (; row - 1 >= _lineLength - size; total--)
-                tiles.push_back(puzzle[column][--row]);
+            for (; x - 1 >= _lineLength - size; total--)
+                tiles.push_back(puzzle[y][--x]);
         else
-            for (size--; column - 1 >= _lineLength - size; total--)
-                tiles.push_back(puzzle[--column][row]);
+            for (size--; y - 1 >= _lineLength - size; total--)
+                tiles.push_back(puzzle[--y][x]);
     }
 
-    for (int column = 0; column < _lineLength; column++)
+    for (int y = 0; y < _lineLength; y++)
     {
-        for (int row = 0; row < _lineLength; row++)
+        for (int x = 0; x < _lineLength; x++)
         {
-            int tile = tiles[row + column * _lineLength];
+            int tile = tiles[x + y * _lineLength];
             if (tile == 0)
                 continue;
             else
             {
                 for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
                 {
-                    if (otherTiles == row)
+                    if (otherTiles == x)
                         continue;
-                    int otherTile = tiles[otherTiles + column * _lineLength];
+                    int otherTile = tiles[otherTiles + y * _lineLength];
                     if (otherTile == 0)
                         continue;
-                    else
+                    std::pair<int, int> expectedPos = _snailPositions[tile];
+                    std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
+                    if (expectedPos.first == otherExpectedPos.first)
                     {
-                        if ((tile > otherTile && row < otherTiles && tile < row + 1) || (tile < otherTile && row > otherTiles && tile > row + 1))
-                            linearConflict++;
+                        if (!(x > otherTiles && otherExpectedPos.second < expectedPos.second))
+                        {
+                            linearConflict += 2;
+                        }
+                        if (!(x < otherTiles && otherExpectedPos.second > expectedPos.second))
+                        {
+                            linearConflict += 2;
+                        }
                     }
                 }
             }
         }
     }
 
-    for (int row = 0; row < _lineLength; row++)
+    for (int x = 0; x < _lineLength; x++)
     {
-        for (int column = 0; column < _lineLength; column++)
+        for (int y = 0; y < _lineLength; y++)
         {
-            int tile = tiles[row + column * _lineLength];
+            int tile = tiles[x + y * _lineLength];
             if (tile == 0)
                 continue;
             else
             {
                 for (int otherTiles = 0; otherTiles < _lineLength; otherTiles++)
                 {
-                    if (otherTiles == column)
+                    if (otherTiles == y)
                         continue;
-                    int otherTile = tiles[row + otherTiles * _lineLength];
+                    int otherTile = tiles[x + otherTiles * _lineLength];
                     if (otherTile == 0)
                         continue;
-                    else
+                    std::pair<int, int> expectedPos = _snailPositions[tile];
+                    std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
+                    if (expectedPos.second == otherExpectedPos.second)
                     {
-                        if ((tile > otherTile && column < otherTiles && tile < column + 1) || (tile < otherTile && column > otherTiles && tile > column + 1))
-                            linearConflict++;
+                        if (!(y > otherTiles && otherExpectedPos.first < expectedPos.first))
+                        {
+                            linearConflict += 2;
+                        }
+                        if (!(y < otherTiles && otherExpectedPos.first > expectedPos.first))
+                        {
+                            linearConflict += 2;
+                        }
                     }
                 }
             }
