@@ -19,8 +19,8 @@ bool PuzzleParser::parseLineLength(std::string lineFile)
         while (isdigit(lineFile[j]))
             j++;
         int foundNumber = std::stoi(lineFile.substr(i, j));
-        if (foundNumber < 3 || foundNumber > 5)
-            throw std::invalid_argument("First line is not a number between 3 and 5");
+        if (foundNumber < 3 || foundNumber > 10)
+            throw std::invalid_argument("First line is not a number between 3 and 10");
         else
             setLineLength(foundNumber);
         while (lineFile[j] != '\n' && isspace(lineFile[j]))
@@ -95,55 +95,45 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens)
 
     // check if puzzle is solvable (odd lineLength)
     // an inversion is when a tile precedes another tile with a lower number on it
-    int inversions = 0;
-    for (unsigned long i = 0; i < tokens.size(); i++)
+
+    std::vector<int> tiles;
+    int total = _lineLength * _lineLength;
+    int size = _lineLength;
+    int column = 0;
+    int row = -1;
+
+    for (int i = 0; total != 0; i++)
     {
-        int number = std::stoi(tokens[i]);
-        for (unsigned long j = i + 1; j < tokens.size(); j++)
+        if (i % 4 == 0)
+            for (; row + 1 < size; total--)
+                tiles.push_back(_puzzle[column][++row]);
+        else if (i % 4 == 1)
+            for (; column + 1 < size; total--)
+                tiles.push_back(_puzzle[++column][row]);
+        else if (i % 4 == 2)
+            for (; row - 1 >= _lineLength - size; total--)
+                tiles.push_back(_puzzle[column][--row]);
+        else
+            for (size--; column - 1 >= _lineLength - size; total--)
+                tiles.push_back(_puzzle[--column][row]);
+    }
+
+    int inversions = 0;
+    for (unsigned long i = 0; i < tiles.size(); i++)
+    {
+        int number = tiles[i];
+        for (unsigned long j = i + 1; j < tiles.size(); j++)
         {
-            int nextNumber = std::stoi(tokens[j]);
+            int nextNumber = tiles[j];
             if (nextNumber == 0)
                 continue;
             if (number > nextNumber)
-            {
                 inversions++;
-            }
         }
     }
 
-    if (inversions % 2 == 0)
-    {
+    if (inversions % 2)
         throw std::invalid_argument("Puzzle is not solvable");
-    }
-    // if (!(this->_lineLength % 2 == 1 && inversions % 2 == 1))
-    // {
-    //     throw std::invalid_argument("Puzzle is not solvable");
-    // }
-
-    // // check if puzzle is solvable (even lineLength)
-    // if (this->_lineLength % 2 == 0)
-    // {
-    //     int rowOfZero = 0;
-    //     for (int i = 0; i < this->_lineLength; i++)
-    //     {
-    //         for (int j = 0; j < this->_lineLength; j++)
-    //         {
-    //             if (this->_puzzle[i][j] == 0)
-    //             {
-    //                 rowOfZero = i;
-    //                 break;
-    //             }
-    //         }
-    //     }
-    //     if (!(rowOfZero % 2 == 1 && inversions % 2 == 0))
-    //     {
-    //         throw std::invalid_argument("Puzzle is not solvable");
-    //     }
-    //     else if (!(rowOfZero % 2 == 0 && inversions % 2 == 1))
-    //     {
-    //         throw std::invalid_argument("Puzzle is not solvable");
-    //     }
-    // }
 
     std::cout << "Puzzle is solvable" << std::endl;
 }
