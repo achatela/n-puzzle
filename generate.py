@@ -89,6 +89,82 @@ if __name__ == "__main__":
 
 	puzzle = make_puzzle(s, solvable=solv, iterations=args.iterations)
 
+	snail = []
+	if s == 3:
+		snail.append(puzzle[0])
+		snail.append(puzzle[1])
+		snail.append(puzzle[2])
+		snail.append(puzzle[5])
+		snail.append(puzzle[8])
+		snail.append(puzzle[7])
+		snail.append(puzzle[6])
+		snail.append(puzzle[3])
+		snail.append(puzzle[4])
+	
+
+	if s == 4:
+		snail.append(puzzle[0])
+		snail.append(puzzle[1])
+		snail.append(puzzle[2])
+		snail.append(puzzle[3])
+		snail.append(puzzle[7])
+		snail.append(puzzle[11])
+		snail.append(puzzle[15])
+		snail.append(puzzle[14])
+		snail.append(puzzle[13])
+		snail.append(puzzle[12])
+		snail.append(puzzle[8])
+		snail.append(puzzle[4])
+		snail.append(puzzle[5])
+		snail.append(puzzle[6])
+		snail.append(puzzle[10])
+		snail.append(puzzle[9])
+
+	if s == 5:
+		snail.append(puzzle[0])
+		snail.append(puzzle[1])
+		snail.append(puzzle[2])
+		snail.append(puzzle[3])
+		snail.append(puzzle[4])
+		snail.append(puzzle[9])
+		snail.append(puzzle[14])
+		snail.append(puzzle[19])
+		snail.append(puzzle[24])
+		snail.append(puzzle[23])
+		snail.append(puzzle[22])
+		snail.append(puzzle[21])
+		snail.append(puzzle[20])
+		snail.append(puzzle[15])
+		snail.append(puzzle[10])
+		snail.append(puzzle[5])
+		snail.append(puzzle[6])
+		snail.append(puzzle[7])
+		snail.append(puzzle[8])
+		snail.append(puzzle[13])
+		snail.append(puzzle[18])
+		snail.append(puzzle[17])
+		snail.append(puzzle[16])
+		snail.append(puzzle[11])
+		snail.append(puzzle[12])
+
+	inversions = 0
+	for i in range(len(snail)):
+		number = snail[i]
+		j = i + 1
+		while j < len(snail):
+			nextNumber = snail[j]
+			if nextNumber == 0:
+				j += 1
+				continue
+			if number > nextNumber:
+				inversions += 1
+			j += 1
+
+	if inversions % 2 == 0:
+		print("Solvable")
+	else:
+		print("Unsolvable")
+
 	w = len(str(s*s))
 	print( "# This puzzle is %s" % ("solvable" if solv else "unsolvable"))
 	print ("%d" % s)
