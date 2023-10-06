@@ -93,9 +93,6 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens)
         _puzzle.push_back(row);
     }
 
-    // check if puzzle is solvable (odd lineLength)
-    // an inversion is when a tile precedes another tile with a lower number on it
-
     std::vector<int> tiles;
     int total = _lineLength * _lineLength;
     int size = _lineLength;
@@ -132,7 +129,6 @@ void PuzzleParser::checkArgumentsValidity(std::vector<std::string> &tokens)
         }
     }
 
-    std::cout << "inversions = " << inversions << std::endl;
     if (inversions % 2)
         throw std::invalid_argument("Puzzle is not solvable");
 
