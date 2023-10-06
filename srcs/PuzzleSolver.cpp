@@ -279,7 +279,8 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
     //             tiles.push_back(puzzle[--y][x]);
     // }
 
-    std::set<int> conflicts;
+    // std::set<int> conflicts;
+    std::map<int, std::set<int> > conflicts;
 
     for (int y = 0; y < _lineLength; y++) {
         for (int x = 0; x < _lineLength; x++) {
@@ -298,12 +299,19 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
                 std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
                 if (otherExpectedPos.first != y || (otherExpectedPos.second <= expectedPos.second && x2 <= x) || (otherExpectedPos.second >= expectedPos.second && x2 >= x))
                     continue;
-                conflicts.insert(otherTile);
+                if (conflicts.find(otherTile) != conflicts.end()) {
+                    std::set<int> conflict = conflicts[otherTile];
+                    if (conflict.find(tile) != conflict.end())
+                        continue;
+                }
+                conflicts[tile].insert(otherTile);
             }
         }
-        linearConflict += conflicts.size();
-        conflicts.clear();
+        for (auto i : conflicts)
+            linearConflict += i.second.size();
     }
+
+    // conflicts.clear();
 
     for (int x = 0; x < _lineLength; x++) {
         for (int y = 0; y < _lineLength; y++) {
@@ -322,11 +330,16 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
                 std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
                 if (otherExpectedPos.second != x || (otherExpectedPos.first <= expectedPos.first && y2 <= y) || (otherExpectedPos.first >= expectedPos.first && y2 >= y))
                     continue;
-                conflicts.insert(otherTile);
+                if (conflicts.find(otherTile) != conflicts.end()) {
+                    std::set<int> conflict = conflicts[otherTile];
+                    if (conflict.find(tile) != conflict.end())
+                        continue;
+                }
+                conflicts[tile].insert(otherTile);
             }
         }
-        linearConflict += conflicts.size();
-        conflicts.clear();
+        for (auto i : conflicts)
+            linearConflict += i.second.size();
     }
 
     return linearConflict;
