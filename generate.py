@@ -161,9 +161,9 @@ if __name__ == "__main__":
 			j += 1
 
 	if inversions % 2 == 0:
-		print("Solvable")
+		print("# Solvable")
 	else:
-		print("Unsolvable")
+		print("# Unsolvable")
 
 	w = len(str(s*s))
 	print( "# This puzzle is %s" % ("solvable" if solv else "unsolvable"))

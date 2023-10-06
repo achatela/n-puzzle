@@ -41,7 +41,6 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
     _root->depth = 0;
     _root->direction = 'N'; // none
 
-    // closedList[puzzle] = _root;
     openList.push(_root);
     Node *currentNode = openList.top();
     openList.pop();
@@ -53,7 +52,6 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
     while (currentNode->puzzle != _snailSolution)
     {
         addNeighbours(currentNode, openList, closedList, heuristic);
-        // currentNode->puzzle.clear();
         currentNode = openList.top();
         openList.pop();
         closedList[currentNode->puzzle] = currentNode;
@@ -100,26 +98,6 @@ PuzzleSolver::~PuzzleSolver() {}
 
 void PuzzleSolver::setSnailPuzzle()
 {
-
-    // if (_lineLength == 3)
-    // {
-    //     _snailSolution = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
-    // }
-    // else if (_lineLength == 4)
-    // {
-    //     _snailSolution = {{1, 2, 3, 4}, {12, 13, 14, 5}, {11, 0, 15, 6}, {10, 9, 8, 7}};
-    // }
-    // else if (_lineLength == 5)
-    // {
-    //     _snailSolution = {{1, 2, 3, 4, 5}, {16, 17, 18, 19, 6}, {15, 24, 0, 20, 7}, {14, 23, 22, 21, 8}, {13, 12, 11, 10, 9}};
-    // }
-    // for (unsigned long i = 0; i < _snailSolution.size(); i++)
-    // {
-    //     for (unsigned long j = 0; j < _snailSolution[i].size(); j++)
-    //     {
-    //         _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
-    //     }
-    // }
     int total = _lineLength * _lineLength;
     int size = _lineLength;
     int number = 1;
@@ -154,19 +132,6 @@ void PuzzleSolver::setSnailPuzzle()
         for (int j = 0; j < _lineLength; j++)
             _snailPositions[_snailSolution[i][j]] = std::make_pair(i, j);
     }
-
-    // std::cout << "Snail solution look like:" << std::endl;
-    // for (int i = 0; i < _lineLength; i++)
-    // {
-    //     for (int j = 0; j < _lineLength; j++)
-    //     {
-    //         if (j == _lineLength - 1)
-    //             std::cout << _snailSolution[i][j];
-    //         else
-    //             std::cout << _snailSolution[i][j] << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
 }
 
 void PuzzleSolver::addNeighbours(Node *currentNode, std::priority_queue<Node *, std::vector<Node *>, CompareNode> &openList, std::map<std::vector<std::vector<int>>, Node *> &closedList, int (PuzzleSolver::*heuristic)(std::vector<std::vector<int>> puzzle))
@@ -256,40 +221,20 @@ int PuzzleSolver::euclidianDistance(std::vector<std::vector<int>> puzzle)
 int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {
     int linearConflict = manhattanDistance(puzzle);
-
-    // std::vector<int> tiles;
-    // int total = _lineLength * _lineLength;
-    // int size = _lineLength;
-    // int y = 0;
-    // int x = -1;
-
-    // for (int i = 0; total != 0; i++)
-    // {
-    //     if (i % 4 == 0)
-    //         for (; x + 1 < size; total--)
-    //             tiles.push_back(puzzle[y][++x]);
-    //     else if (i % 4 == 1)
-    //         for (; y + 1 < size; total--)
-    //             tiles.push_back(puzzle[++y][x]);
-    //     else if (i % 4 == 2)
-    //         for (; x - 1 >= _lineLength - size; total--)
-    //             tiles.push_back(puzzle[y][--x]);
-    //     else
-    //         for (size--; y - 1 >= _lineLength - size; total--)
-    //             tiles.push_back(puzzle[--y][x]);
-    // }
-
     std::set<int> conflicts;
 
-    for (int y = 0; y < _lineLength; y++) {
-        for (int x = 0; x < _lineLength; x++) {
+    for (int y = 0; y < _lineLength; y++)
+    {
+        for (int x = 0; x < _lineLength; x++)
+        {
             int tile = puzzle[y][x];
             if (tile == 0)
                 continue;
             std::pair<int, int> expectedPos = _snailPositions[tile];
             if (y != expectedPos.first)
                 continue;
-            for (int x2 = 0; x2 < _lineLength; x2++) {
+            for (int x2 = 0; x2 < _lineLength; x2++)
+            {
                 if (x2 == x)
                     continue;
                 int otherTile = puzzle[y][x2];
@@ -305,15 +250,18 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
         conflicts.clear();
     }
 
-    for (int x = 0; x < _lineLength; x++) {
-        for (int y = 0; y < _lineLength; y++) {
+    for (int x = 0; x < _lineLength; x++)
+    {
+        for (int y = 0; y < _lineLength; y++)
+        {
             int tile = puzzle[y][x];
             if (tile == 0)
                 continue;
             std::pair<int, int> expectedPos = _snailPositions[tile];
             if (x != expectedPos.second)
                 continue;
-            for (int y2 = 0; y2 < _lineLength; y2++) {
+            for (int y2 = 0; y2 < _lineLength; y2++)
+            {
                 if (y2 == y)
                     continue;
                 int otherTile = puzzle[y2][x];
