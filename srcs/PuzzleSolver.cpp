@@ -222,29 +222,6 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {
     int linearConflict = manhattanDistance(puzzle);
 
-    // std::vector<int> tiles;
-    // int total = _lineLength * _lineLength;
-    // int size = _lineLength;
-    // int y = 0;
-    // int x = -1;
-
-    // for (int i = 0; total != 0; i++)
-    // {
-    //     if (i % 4 == 0)
-    //         for (; x + 1 < size; total--)
-    //             tiles.push_back(puzzle[y][++x]);
-    //     else if (i % 4 == 1)
-    //         for (; y + 1 < size; total--)
-    //             tiles.push_back(puzzle[++y][x]);
-    //     else if (i % 4 == 2)
-    //         for (; x - 1 >= _lineLength - size; total--)
-    //             tiles.push_back(puzzle[y][--x]);
-    //     else
-    //         for (size--; y - 1 >= _lineLength - size; total--)
-    //             tiles.push_back(puzzle[--y][x]);
-    // }
-
-    // std::set<int> conflicts;
     std::map<int, std::set<int> > conflicts;
 
     for (int y = 0; y < _lineLength; y++)
@@ -267,19 +244,26 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
                 std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
                 if (otherExpectedPos.first != y || (otherExpectedPos.second <= expectedPos.second && x2 <= x) || (otherExpectedPos.second >= expectedPos.second && x2 >= x))
                     continue;
-                if (conflicts.find(otherTile) != conflicts.end()) {
-                    std::set<int> conflict = conflicts[otherTile];
-                    if (conflict.find(tile) != conflict.end())
-                        continue;
-                }
                 conflicts[tile].insert(otherTile);
             }
         }
-        for (auto i : conflicts)
-            linearConflict += i.second.size();
+        int i = _lineLength * _lineLength;
+        while (--i){
+            if (conflicts.find(i) != conflicts.end()) {
+                std::set<int> conflict = conflicts[i];
+                linearConflict += conflict.size() * 2;
+                int j = i;
+                while (--j) {
+                    if (conflicts.find(j) != conflicts.end()){
+                        std::set<int> otherConflict = conflicts[j];
+                        auto it = otherConflict.find(i);
+                        if (it != otherConflict.end())
+                            otherConflict.erase(it);
+                    }
+                }
+            }
+        }
     }
-
-    // conflicts.clear();
 
     for (int x = 0; x < _lineLength; x++) {
         for (int y = 0; y < _lineLength; y++) {
@@ -299,16 +283,25 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
                 std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
                 if (otherExpectedPos.second != x || (otherExpectedPos.first <= expectedPos.first && y2 <= y) || (otherExpectedPos.first >= expectedPos.first && y2 >= y))
                     continue;
-                if (conflicts.find(otherTile) != conflicts.end()) {
-                    std::set<int> conflict = conflicts[otherTile];
-                    if (conflict.find(tile) != conflict.end())
-                        continue;
-                }
                 conflicts[tile].insert(otherTile);
             }
         }
-        for (auto i : conflicts)
-            linearConflict += i.second.size();
+        int i = _lineLength * _lineLength;
+        while (--i){
+            if (conflicts.find(i) != conflicts.end()) {
+                std::set<int> conflict = conflicts[i];
+                linearConflict += conflict.size() * 2;
+                int j = i;
+                while (--j) {
+                    if (conflicts.find(j) != conflicts.end()){
+                        std::set<int> otherConflict = conflicts[j];
+                        auto it = otherConflict.find(i);
+                        if (it != otherConflict.end())
+                            otherConflict.erase(it);
+                    }
+                }
+            }
+        }
     }
 
     return linearConflict;
