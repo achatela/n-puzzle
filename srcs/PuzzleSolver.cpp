@@ -216,6 +216,24 @@ int PuzzleSolver::euclidianDistance(std::vector<std::vector<int>> puzzle)
     return distance;
 }
 
+int PuzzleSolver::resolveConflicts(std::list<std::pair<int, int>> conflicts, std::map<int, int> conflictsNumber) {
+    int count = 0;
+    while (!conflicts.empty()) {
+        auto maxElement = std::max_element(conflictsNumber.begin(), conflictsNumber.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {return a.second < b.second;});
+        auto conflict = conflicts.begin();
+        while (conflict != conflicts.end()) {
+            if (conflict->first == maxElement->first)
+                conflictsNumber[conflict->second]--;
+            else
+                conflictsNumber[conflict->first]--;
+            conflict = conflicts.erase(conflict);
+        }
+        conflictsNumber.erase(maxElement);
+        count += 2;
+    }
+    return count;
+}
+
 int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {
     int linearConflict = manhattanDistance(puzzle);
@@ -248,19 +266,7 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
                     conflictsNumber[otherTile] = 1;
             }
         }
-        while (!conflicts.empty()) {
-            auto maxElement = std::max_element(conflictsNumber.begin(), conflictsNumber.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {return a.second < b.second;});
-            auto conflict = conflicts.begin();
-            while (conflict != conflicts.end()) {
-                if (conflict->first == maxElement->first)
-                    conflictsNumber[conflict->second]--;
-                else
-                    conflictsNumber[conflict->first]--;
-                conflict = conflicts.erase(conflict);
-            }
-            conflictsNumber.erase(maxElement);
-            linearConflict += 2;
-        }
+        linearConflict += resolveConflicts(conflicts, conflictsNumber);
     }
 
     for (int x = 0; x < _lineLength; x++) {
@@ -291,21 +297,8 @@ int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
                     conflictsNumber[otherTile] = 1;
             }
         }
-        while (!conflicts.empty()) {
-            auto maxElement = std::max_element(conflictsNumber.begin(), conflictsNumber.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {return a.second < b.second;});
-            auto conflict = conflicts.begin();
-            while (conflict != conflicts.end()) {
-                if (conflict->first == maxElement->first)
-                    conflictsNumber[conflict->second]--;
-                else
-                    conflictsNumber[conflict->first]--;
-                conflict = conflicts.erase(conflict);
-            }
-            conflictsNumber.erase(maxElement);
-            linearConflict += 2;
-        }
+        linearConflict += resolveConflicts(conflicts, conflictsNumber);
     }
-
 
     return linearConflict;
 }
