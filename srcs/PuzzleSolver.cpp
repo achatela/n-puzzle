@@ -226,6 +226,10 @@ int PuzzleSolver::euclidianDistance(std::vector<std::vector<int>> puzzle)
 //                 conflictsNumbers[conflict->second]--;
 //                 conflict = conflicts.erase(conflict);
 //             }
+//             else if (conflict->second == maxTile->first){
+//                 conflictsNumbers[conflict->first]--;
+//                 conflict = conflicts.erase(conflict);
+//             }
 //             else
 //                 conflict++;
 //         }
