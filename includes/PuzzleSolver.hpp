@@ -63,7 +63,7 @@ class PuzzleSolver
         std::vector<std::vector<int>> makePuzzle(char direction, std::vector<std::vector<int>> puzzle);
         int manhattanDistance(std::vector<std::vector<int>> puzzle);
         int euclidianDistance(std::vector<std::vector<int>> puzzle);
-        int resolveConflicts(std::list<std::pair<int, int>> conflicts, std::map<int, int> conflictsNumber);
+        // int resolveConflicts(std::list<std::pair<int, int>> conflicts, std::map<int, int> conflictsNumber);
         int linearConflict(std::vector<std::vector<int>> puzzle);
         int uniformCostFakeHeuristic(std::vector<std::vector<int>> puzzle);
 
