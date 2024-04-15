@@ -7,13 +7,9 @@ PuzzleSolver::PuzzleSolver(std::vector<std::vector<int>> puzzle, int lineLength,
 
     int field;
     if (algorithmInput == "greedy")
-    {
         field = 1;
-    }
     else if (algorithmInput == "astar")
-    {
         field = 0;
-    }
     else
         throw std::invalid_argument("Invalid algorithm");
 
@@ -215,98 +211,6 @@ int PuzzleSolver::euclidianDistance(std::vector<std::vector<int>> puzzle)
 
     return distance;
 }
-
-// int PuzzleSolver::resolveConflicts(std::list<std::pair<int, int>> conflicts, std::map<int, int> conflictsNumbers) {
-//     int count = 0;
-//     while (!conflicts.empty()) {
-//         auto maxTile = std::max_element(conflictsNumbers.begin(), conflictsNumbers.end(), [](const std::pair<int, int> &lhs, const std::pair<int, int> &rhs) { return lhs.second < rhs.second;});
-//         auto conflict = conflicts.begin();
-//         while (conflict != conflicts.end()) {
-//             if (conflict->first == maxTile->first){
-//                 conflictsNumbers[conflict->second]--;
-//                 conflict = conflicts.erase(conflict);
-//             }
-//             else if (conflict->second == maxTile->first){
-//                 conflictsNumbers[conflict->first]--;
-//                 conflict = conflicts.erase(conflict);
-//             }
-//             else
-//                 conflict++;
-//         }
-//         conflictsNumbers.erase(maxTile);
-//         count += 2;
-//     }
-//     return count;
-// }
-
-// int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
-// {
-//     int linearConflict = manhattanDistance(puzzle);
-
-//     for (int y = 0; y < _lineLength; y++) {
-//         std::list<std::pair<int, int>> conflicts;
-//         std::map<int, int> conflictsNumbers;
-//         for (int x = 0; x < _lineLength - 1; x++) {
-//             int tile = puzzle[y][x];
-//             if (tile == 0)
-//                 continue;
-//             std::pair<int, int> expectedPos = _snailPositions[tile];
-//             if (y != expectedPos.first)
-//                 continue;
-//             for (int otherX = x + 1; otherX < _lineLength; otherX++) {
-//                 int otherTile = puzzle[y][otherX];
-//                 if (otherTile == 0)
-//                     continue;
-//                 std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
-//                 if (otherExpectedPos.first != y || otherExpectedPos.second > expectedPos.second)
-//                     continue;
-//                 conflicts.push_back(std::pair<int, int>(tile, otherTile));
-//                 if (conflictsNumbers.find(tile) != conflictsNumbers.end())
-//                     conflictsNumbers[tile]++;
-//                 else
-//                     conflictsNumbers[tile] = 1;
-//                 if (conflictsNumbers.find(otherTile) != conflictsNumbers.end())
-//                     conflictsNumbers[otherTile]++;
-//                 else
-//                     conflictsNumbers[otherTile] = 1;
-//             }
-//         }
-//         linearConflict += resolveConflicts(conflicts, conflictsNumbers);
-//     }
-
-//     for (int x = 0; x < _lineLength; x++) {
-//         std::list<std::pair<int, int>> conflicts;
-//         std::map<int, int> conflictsNumbers;
-//         for (int y = 0; y < _lineLength - 1; y++) {
-//             int tile = puzzle[y][x];
-//             if (tile == 0)
-//                 continue;
-//             std::pair<int, int> expectedPos = _snailPositions[tile];
-//             if (x != expectedPos.second)
-//                 continue;
-//             for (int otherY = y + 1; otherY < _lineLength; otherY++) {
-//                 int otherTile = puzzle[otherY][x];
-//                 if (otherTile == 0)
-//                     continue;
-//                 std::pair<int, int> otherExpectedPos = _snailPositions[otherTile];
-//                 if (otherExpectedPos.second != x || otherExpectedPos.first > expectedPos.first)
-//                     continue;
-//                 conflicts.push_back(std::pair<int, int>(tile, otherTile));
-//                 if (conflictsNumbers.find(tile) != conflictsNumbers.end())
-//                     conflictsNumbers[tile]++;
-//                 else
-//                     conflictsNumbers[tile] = 1;
-//                 if (conflictsNumbers.find(otherTile) != conflictsNumbers.end())
-//                     conflictsNumbers[otherTile]++;
-//                 else
-//                     conflictsNumbers[otherTile] = 1;
-//             }
-//         }
-//         linearConflict += resolveConflicts(conflicts, conflictsNumbers);
-//     }
-
-//     return linearConflict;
-// }
 
 int PuzzleSolver::linearConflict(std::vector<std::vector<int>> puzzle)
 {

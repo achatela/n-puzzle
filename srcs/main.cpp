@@ -113,6 +113,5 @@ int main(int argc, char **argv)
     {
         std::cerr << e.what() << std::endl;
     }
-    // std::cout << std::endl;
     return 0;
 }
